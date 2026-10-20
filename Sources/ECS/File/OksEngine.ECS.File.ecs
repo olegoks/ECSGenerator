@@ -228,12 +228,12 @@ ECSNamespace = {
                     },
                     FieldArchetype = {
                         components = {
-                            "Field::Tag",
-                            "Field::Type",
-                            "Field::Name",
-                            "Field::DefaultValue",
-                            "Field::Alignment",
-                            "Field::Copyable"
+                            "Component::Field::Tag",
+                            "Component::Field::Type",
+                            "Component::Field::Name",
+                            "Component::Field::DefaultValue",
+                            "Component::Field::Alignment",
+                            "Component::Field::Copyable"
                         }
                     }
                 },
