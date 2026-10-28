@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ECS2.World.hpp>
+#include <Common/ECS2/ECS2.World.hpp>
 
 #include<magic_enum/magic_enum.hpp>
 

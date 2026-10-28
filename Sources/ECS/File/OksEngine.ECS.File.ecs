@@ -39,8 +39,8 @@ ECSNamespace = {
                 createsEntities = {
                     {
                         createsComponents = {
-                            "ECS::File::Tag",
-                            "ECS::File::Path",
+                            "::ECS::File::Tag",
+                            "::ECS::File::Path",
                             "LuaScript"
                         }
                     }
@@ -57,7 +57,8 @@ ECSNamespace = {
                 }
             },
             DefinitionOrderComponent = {
-                description = "Need for correct cpp code generation, to follow .ecs abtractions order in .cpp/.hpp files.",
+                description =
+                "Need for correct cpp code generation, to follow .ecs abtractions order in .cpp/.hpp files.",
                 fields = {
                     { type = "Common::Index", name = "orderIndex" }
                 }
@@ -509,7 +510,8 @@ ECSNamespace = {
                                 }
                             },
                             ProcessAllCombinationsComponent = {
-                                description = 'It means that system will take ECS2::Entity::Id of all entities as parameter with no components',
+                                description =
+                                'It means that system will take ECS2::Entity::Id of all entities as parameter with no components',
                                 serializable = false,
                                 bindable = false,
                             },
@@ -565,7 +567,7 @@ ECSNamespace = {
                                     { type = "std::vector<std::string>", name = "components" }
                                 }
                             },
-                            
+
                             EntityArchetype = {
                                 components = {
                                     "Entity::Tag",
@@ -610,7 +612,7 @@ ECSNamespace = {
                             ArchetypeComponent = {
                                 fields = {
                                     { type = "ECS2::Entity::Id", name = "id",  defaultValue = "ECS2::Entity::Id::invalid_" },
-                                    { type = "std::string", name = "name" }
+                                    { type = "std::string",      name = "name" }
                                 }
                             },
                             EntityArchetype = {
@@ -666,7 +668,7 @@ ECSNamespace = {
                             ArchetypeComponent = {
                                 fields = {
                                     { type = "ECS2::Entity::Id", name = "id",  defaultValue = "ECS2::Entity::Id::invalid_" },
-                                    { type = "std::string", name = "name" }
+                                    { type = "std::string",      name = "name" }
                                 }
                             },
                             EntityArchetype = {
@@ -681,25 +683,25 @@ ECSNamespace = {
                         }
                     },
                     UpdateMethodArchetype = {
-                        archetypes = {
-                            "Process::Entity::Entity",
-                            "Create::Entity::Entity",
-                            "Access::Entity::Entity"
-                        },
                         components = {
                             "UpdateMethod::Tag",
                             "Process::Entity::EntityIds",
                             "Create::Entity::EntityIds",
                             "Access::Entity::EntityIds",
-                            
+
+                        }
+                    },
+                    UpdateMethodAggregateArchetype = {
+                        archetypes = { 
+                            "System::UpdateMethod::UpdateMethod",
+                            "Process::Entity::Entity",
+                            "Create::Entity::Entity",
+                            "Access::Entity::Entity"
                         }
                     }
                 },
+
                 SystemArchetype = {
-                    archetypes = {
-                        "System::UpdateMethod::UpdateMethod",
-                        "System::CallOrder::CallOrder"
-                    },
                     components = {
                         "Table::Tag",
                         "System::Tag",
@@ -713,6 +715,13 @@ ECSNamespace = {
                         "Table::ParentTableEntityId",
                         "Table::System::UpdateMethod::EntityId",
                         "File::EntityId"
+                    }
+                },
+                SystemAggregateArchetype = {
+                    archetypes = {
+                        "System::System",
+                        "UpdateMethod::UpdateMethodAggregate",
+                        "CallOrder::CallOrder"
                     }
                 }
             },
@@ -860,7 +869,7 @@ ECSNamespace = {
                 type = "Initialize",
                 callOrder = {
                     runAfter = { "ECS::Module::CreateFileEntities" }
-                },  
+                },
                 updateMethod = {
                     processesEntities = {
                         {
@@ -929,7 +938,7 @@ ECSNamespace = {
                 type = "Initialize",
                 callOrder = {
                     runAfter = { "ECS::File::Table::Parse" }
-                },  
+                },
                 updateMethod = {
                     processesEntities = {
                         {
@@ -941,7 +950,7 @@ ECSNamespace = {
                     },
                     accessingEntities = {
                         {
-                            archetype = "File::Table::System::System"
+                            archetype = "File::Table::System::SystemAggregate"
                         }
                     },
                     createsEntities = {
@@ -960,7 +969,7 @@ ECSNamespace = {
                 type = "Initialize",
                 callOrder = {
                     runAfter = { "ECS::File::Table::ValidateCallOrderDependecies" }
-                },  
+                },
                 updateMethod = {
                     processesEntities = {
                         {
@@ -973,16 +982,10 @@ ECSNamespace = {
                     },
                     accessingEntities = {
                         {
-                            archetype = "File::Table::System::System"
-                        },
-                        {
-                            archetype = "File::Table::System::UpdateMethod::UpdateMethod"
+                            archetype = "File::Table::System::SystemAggregate"
                         },
                         {
                             accessingComponents = {
-                                "ECS::File::Table::System::CallOrder::EntityId",
-                                "ECS::File::Table::System::CallOrder::RunAfter",
-                                "ECS::File::Table::System::CallOrder::RunBefore",
                                 "ECS::File::Table::ParentTableEntityId",
                                 "ECS::File::Table::Name"
                             }

@@ -33,21 +33,7 @@ ECSNamespace = {
                         }
                     },
                     {
-                        archetype = "File::Table::System::System"
-                    },
-                    {
-                        archetype = "File::Table::System::UpdateMethod::UpdateMethod"
-                    },
-                    {
-                        archetype = "File::Table::System::UpdateMethod::Process::Entity::Entity"
-                    },
-                    {
-                        accessingComponents = {
-                            "File::Table::System::CallOrder::EntityId",
-                            "File::Table::System::CallOrder::Tag",
-                            "File::Table::System::CallOrder::RunAfter",
-                            "File::Table::System::CallOrder::RunBefore",
-                        }
+                        archetype = "File::Table::System::SystemAggregate"
                     },
                     {
                         archetype = "File::File"
@@ -249,24 +235,7 @@ ECSNamespace = {
                         }
                     },
                     {
-                        archetype = "File::Table::System::System"
-                    },
-                    {
-                        archetype = "File::Table::System::UpdateMethod::UpdateMethod"
-                    },
-                    {
-                        archetype = "File::Table::System::UpdateMethod::Process::Entity::Entity"
-                    },
-                    {
-                        archetype = "File::Table::System::UpdateMethod::Access::Entity::Entity"
-                    },
-                    {
-                        accessingComponents = {
-                            "File::Table::System::CallOrder::EntityId",
-                            "File::Table::System::CallOrder::Tag",
-                            "File::Table::System::CallOrder::RunAfter",
-                            "File::Table::System::CallOrder::RunBefore",
-                        }
+                        archetype = "File::Table::System::SystemAggregate"
                     },
                     {
                         archetype = "File::File"
@@ -320,16 +289,7 @@ ECSNamespace = {
                         }
                     },
                     {
-                        archetype = "File::Table::System::System"
-                    },
-                    {
-                        archetype = "File::Table::System::UpdateMethod::UpdateMethod"
-                    },
-                    {
-                        archetype = "File::Table::System::UpdateMethod::Process::Entity::Entity"
-                    },
-                    {
-                        archetype = "File::Table::System::UpdateMethod::Access::Entity::Entity"
+                        archetype = "File::Table::System::SystemAggregate"
                     },
                     {
                         accessingComponents = {
@@ -389,24 +349,7 @@ ECSNamespace = {
                 },
                 accessingEntities = {
                     {
-                        archetype = "File::Table::System::System"
-                    },
-                    {
-                        archetype = "File::Table::System::UpdateMethod::UpdateMethod"
-                    },
-                    {
-                        archetype = "File::Table::System::UpdateMethod::Process::Entity::Entity"
-                    },
-                    {
-                        archetype = "File::Table::System::UpdateMethod::Access::Entity::Entity"
-                    },
-                    {
-                        accessingComponents = {
-                            "File::Table::System::CallOrder::EntityId",
-                            "File::Table::System::CallOrder::Tag",
-                            "File::Table::System::CallOrder::RunAfter",
-                            "File::Table::System::CallOrder::RunBefore",
-                        }
+                        archetype = "File::Table::System::SystemAggregate"
                     },
                     {
                         archetype = "File::File"
@@ -463,7 +406,7 @@ ECSNamespace = {
                         }
                     },
                     {
-                        archetype = "File::Table::System::System"
+                        archetype = "File::Table::System::SystemAggregate"
                     },
                     {
                         archetype = "File::File"

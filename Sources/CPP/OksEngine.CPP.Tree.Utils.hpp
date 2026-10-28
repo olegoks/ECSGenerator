@@ -156,639 +156,1438 @@ ECS2::Entity::Id CPP__TREE__PREPROCESSOR__CREATE_INCLUDE(System* system, const s
 
 
 /*						VARIABLE DECLARATION						*/
-#define CPP__TREE__DECL__CREATE_VARIABLE_COMPONENTS(variable, type, name, initialize, parent)\
-	[this](ECS2::Entity::Id variableEntityId, ECS2::Entity::Id typeEntityId, const std::string& variableName, ECS2::Entity::Id initializeEntityId, ECS2::Entity::Id parentEntityId){\
-			CreateComponent<CPP::Tree::Node::Tag>(variableEntityId);\
-			CreateComponent<CPP::Tree::Decl::Tag>(variableEntityId);\
-			CreateComponent<CPP::Tree::Decl::Variable>(variableEntityId, typeEntityId, initializeEntityId);\
-			CreateComponent<CPP::Tree::Node::Name>(variableEntityId, variableName);\
-			if(parentEntityId.IsValid()){\
-				CreateComponent<CPP::Tree::Node::ParentEntityId>(variableEntityId, parentEntityId); \
-			}\
-			return variableEntityId;\
-			}(variable, type, name, initialize, parent)
+//#define CPP__TREE__DECL__CREATE_VARIABLE_COMPONENTS(variable, type, name, initialize, parent)\
+//	[this](ECS2::Entity::Id variableEntityId, ECS2::Entity::Id typeEntityId, const std::string& variableName, ECS2::Entity::Id initializeEntityId, ECS2::Entity::Id parentEntityId){\
+//			system->template CreateComponent<CPP::Tree::Node::Tag>(variableEntityId);\
+//			system->template CreateComponent<CPP::Tree::Decl::Tag>(variableEntityId);\
+//			system->template CreateComponent<CPP::Tree::Decl::Variable>(variableEntityId, typeEntityId, initializeEntityId);\
+//			system->template CreateComponent<CPP::Tree::Node::Name>(variableEntityId, variableName);\
+//			if(parentEntityId.IsValid()){\
+//				system->template CreateComponent<CPP::Tree::Node::ParentEntityId>(variableEntityId, parentEntityId); \
+//			}\
+//			return variableEntityId;\
+//			}(variable, type, name, initialize, parent)
 
-#define CPP__TREE__DECL__CREATE_VARIABLE(type, name, initialize, parent)\
-	[this](\
-		ECS2::Entity::Id typeEntityId,\
-		const std::string& variableName,\
-		ECS2::Entity::Id initializeEntityId,\
-		ECS2::Entity::Id parentEntityId){\
-			ECS2::Entity::Id variableEntityId = CreateEntity();\
-			CPP__TREE__DECL__CREATE_VARIABLE_COMPONENTS(\
-				variableEntityId,\
-				typeEntityId,\
-				variableName,\
-				initializeEntityId,\
-				parentEntityId);\
-			return variableEntityId;\
-			}(type, name, initialize, parent)
-
-#define CPP__TREE__DECL__CREATE_STATIC_VARIABLE(type, name, initialize, parent)\
-	[this](\
-		ECS2::Entity::Id typeEntityId,\
-		const std::string& variableName,\
-		ECS2::Entity::Id initializeEntityId,\
-		ECS2::Entity::Id parentEntityId){\
-			ECS2::Entity::Id variableEntityId = CPP__TREE__DECL__CREATE_VARIABLE(\
-				typeEntityId,\
-				variableName,\
-				initializeEntityId,\
-				parentEntityId);\
-			CreateComponent<CPP::Tree::StorageClass::Static_>(variableEntityId);\
-			return variableEntityId;\
-	}(type, name, initialize, parent)
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_VARIABLE_COMPONENTS(System* system, ECS2::Entity::Id variableEntityId, ECS2::Entity::Id typeEntityId, const std::string& variableName, ECS2::Entity::Id initializeEntityId, ECS2::Entity::Id parentEntityId) {
+	system->template CreateComponent<CPP::Tree::Node::Tag>(variableEntityId);
+	system->template CreateComponent<CPP::Tree::Decl::Tag>(variableEntityId);
+	system->template CreateComponent<CPP::Tree::Decl::Variable>(variableEntityId, typeEntityId, initializeEntityId);
+	system->template CreateComponent<CPP::Tree::Node::Name>(variableEntityId, variableName);
+	if (parentEntityId.IsValid()) {
+		system->template CreateComponent<CPP::Tree::Node::ParentEntityId>(variableEntityId, parentEntityId);
+	}
+	return variableEntityId;
+}
 
 
-#define CPP__TREE__DECL__CREATE_STATIC_CONSTEXPR_VARIABLE(type, name, initialize, parent)\
-	[this](ECS2::Entity::Id typeEntityId, const std::string& variableName, ECS2::Entity::Id initializeEntityId, ECS2::Entity::Id parentEntityId){\
-			const ECS2::Entity::Id variableEntityId = CPP__TREE__DECL__CREATE_VARIABLE(typeEntityId, variableName, initializeEntityId, parentEntityId);\
-			CreateComponent<CPP::Tree::StorageClass::Static_>(variableEntityId);\
-			CreateComponent<CPP::Tree::Constexpr_>(variableEntityId);\
-			return variableEntityId;\
-			}(type, name, initialize, parent)
+//#define CPP__TREE__DECL__CREATE_VARIABLE(type, name, initialize, parent)\
+//	[this](\
+//		ECS2::Entity::Id typeEntityId,\
+//		const std::string& variableName,\
+//		ECS2::Entity::Id initializeEntityId,\
+//		ECS2::Entity::Id parentEntityId){\
+//			ECS2::Entity::Id variableEntityId = CreateEntity();\
+//			CPP__TREE__DECL__CREATE_VARIABLE_COMPONENTS(\
+//				variableEntityId,\
+//				typeEntityId,\
+//				variableName,\
+//				initializeEntityId,\
+//				parentEntityId);\
+//			return variableEntityId;\
+//			}(type, name, initialize, parent)
+//
+//#define CPP__TREE__DECL__CREATE_STATIC_VARIABLE(type, name, initialize, parent)\
+//	[this](\
+//		ECS2::Entity::Id typeEntityId,\
+//		const std::string& variableName,\
+//		ECS2::Entity::Id initializeEntityId,\
+//		ECS2::Entity::Id parentEntityId){\
+//			ECS2::Entity::Id variableEntityId = CPP__TREE__DECL__CREATE_VARIABLE(\
+//				typeEntityId,\
+//				variableName,\
+//				initializeEntityId,\
+//				parentEntityId);\
+//			CreateComponent<CPP::Tree::StorageClass::Static_>(variableEntityId);\
+//			return variableEntityId;\
+//	}(type, name, initialize, parent)
+//
+//
+//#define CPP__TREE__DECL__CREATE_STATIC_CONSTEXPR_VARIABLE(type, name, initialize, parent)\
+//	[this](ECS2::Entity::Id typeEntityId, const std::string& variableName, ECS2::Entity::Id initializeEntityId, ECS2::Entity::Id parentEntityId){\
+//			const ECS2::Entity::Id variableEntityId = CPP__TREE__DECL__CREATE_VARIABLE(typeEntityId, variableName, initializeEntityId, parentEntityId);\
+//			CreateComponent<CPP::Tree::StorageClass::Static_>(variableEntityId);\
+//			CreateComponent<CPP::Tree::Constexpr_>(variableEntityId);\
+//			return variableEntityId;\
+//			}(type, name, initialize, parent)
+
+/* ======================== VARIABLES ======================== */
+
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_VARIABLE(
+    System* system,
+    ECS2::Entity::Id typeEntityId,
+    const std::string& variableName,
+    ECS2::Entity::Id initializeEntityId,
+    ECS2::Entity::Id parentEntityId) {
+    ECS2::Entity::Id variableEntityId = system->CreateEntity();
+    CPP__TREE__DECL__CREATE_VARIABLE_COMPONENTS(
+        system,
+        variableEntityId,
+        typeEntityId,
+        variableName,
+        initializeEntityId,
+        parentEntityId);
+    return variableEntityId;
+}
+
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_STATIC_VARIABLE(
+    System* system,
+    ECS2::Entity::Id typeEntityId,
+    const std::string& variableName,
+    ECS2::Entity::Id initializeEntityId,
+    ECS2::Entity::Id parentEntityId) {
+    ECS2::Entity::Id variableEntityId = CPP__TREE__DECL__CREATE_VARIABLE(
+        system,
+        typeEntityId,
+        variableName,
+        initializeEntityId,
+        parentEntityId);
+    system->template CreateComponent<CPP::Tree::StorageClass::Static_>(variableEntityId);
+    return variableEntityId;
+}
+
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_STATIC_CONSTEXPR_VARIABLE(
+    System* system,
+    ECS2::Entity::Id typeEntityId,
+    const std::string& variableName,
+    ECS2::Entity::Id initializeEntityId,
+    ECS2::Entity::Id parentEntityId) {
+    const ECS2::Entity::Id variableEntityId = CPP__TREE__DECL__CREATE_VARIABLE(
+        system,
+        typeEntityId,
+        variableName,
+        initializeEntityId,
+        parentEntityId);
+    system->template CreateComponent<CPP::Tree::StorageClass::Static_>(variableEntityId);
+    system->template CreateComponent<CPP::Tree::Constexpr_>(variableEntityId);
+    return variableEntityId;
+}
 
 
 /*							NAMESPACE DECLARATION										*/
-#define CPP__TREE__DECL__CREATE_NAMESPACE(namespaceName)\
-	[this](const std::string& name){\
-			const ECS2::Entity::Id namespaceEntityId = CreateEntity();\
-			CreateComponent<CPP::Tree::Node::Tag>(namespaceEntityId);\
-			CreateComponent<CPP::Tree::Decl::Tag>(namespaceEntityId);\
-			CreateComponent<CPP::Tree::Decl::Namespace_>(namespaceEntityId);\
-			CreateComponent<CPP::Tree::Node::Name>(namespaceEntityId, name);\
-			return namespaceEntityId;\
-			}(namespaceName)
+//#define CPP__TREE__DECL__CREATE_NAMESPACE(namespaceName)\
+//	[this](const std::string& name){\
+//			const ECS2::Entity::Id namespaceEntityId = CreateEntity();\
+//			CreateComponent<CPP::Tree::Node::Tag>(namespaceEntityId);\
+//			CreateComponent<CPP::Tree::Decl::Tag>(namespaceEntityId);\
+//			CreateComponent<CPP::Tree::Decl::Namespace_>(namespaceEntityId);\
+//			CreateComponent<CPP::Tree::Node::Name>(namespaceEntityId, name);\
+//			return namespaceEntityId;\
+//			}(namespaceName)
 
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_NAMESPACE(System* system, const std::string& name) {
+	const ECS2::Entity::Id namespaceEntityId = system->CreateEntity();
+	system->template CreateComponent<CPP::Tree::Node::Tag>(namespaceEntityId);
+	system->template CreateComponent<CPP::Tree::Decl::Tag>(namespaceEntityId);
+	system->template CreateComponent<CPP::Tree::Decl::Namespace_>(namespaceEntityId);
+	system->template CreateComponent<CPP::Tree::Node::Name>(namespaceEntityId, name);
+	return namespaceEntityId;
+}
 
 //If cppTableEntity id has only one parent namespace firstNamespaceEntityId == lastNamespaceEntityId == valid ECS2::Entity::Id
 //If cppTableEntity has no parents firstNamespaceEntityId == lastNamespaceEntityId == ECS2::Entity::Id::invalid_
-#define CPP__TREE__CREATE_CPP_NAMESPACES(parentEntityIds, entityId)\
-		[this](const std::vector<ECS2::Entity::Id>& parentTableEntityIds, std::vector<ECS2::Entity::Id> cppTableEntityId) ->std::pair<ECS2::Entity::Id, ECS2::Entity::Id> {\
-			ECS2::Entity::Id firstNamespaceEntityId = ECS2::Entity::Id::invalid_;\
-			ECS2::Entity::Id lastNamespaceEntityId = ECS2::Entity::Id::invalid_;\
-			std::vector<ECS2::Entity::Id> cppNamespaceEntityIds;\
-			for (Common::Index i = 0; i < parentTableEntityIds.size(); i++) {\
-				ECS2::Entity::Id parentTableEntityId = parentTableEntityIds[i]; \
-				const ECS2::Entity::Id namespaceEntityId = CPP__TREE__DECL__CREATE_NAMESPACE(GetComponent<File::Table::Name>(parentTableEntityId)->name_);\
-				cppNamespaceEntityIds.push_back(namespaceEntityId);\
-			}\
-			for (Common::Index i = 0; i < parentTableEntityIds.size(); i++) {\
-				ECS2::Entity::Id parentTableEntityId = parentTableEntityIds[i];\
-				const ECS2::ComponentsFilter tableCF = GetComponentsFilter(parentTableEntityId);\
-				ASSERT(tableCF.IsSet<File::Table::Namespace::Tag>());\
-				ASSERT(tableCF.IsSet<File::Table::ChildTablesEntityIds>());\
-				const ECS2::Entity::Id namespaceEntityId = cppNamespaceEntityIds[i];\
-				if (i != parentTableEntityIds.size() - 1) {\
-					CreateComponent<CPP::Tree::Node::ChildEntityIds>(namespaceEntityId, std::vector{ cppNamespaceEntityIds[i + 1] });\
-				}\
-				else {\
-					if(!cppTableEntityId.empty()){\
-						CreateComponent<CPP::Tree::Node::ChildEntityIds>(namespaceEntityId, cppTableEntityId);\
-					}\
-					lastNamespaceEntityId = namespaceEntityId; \
-				}\
-				if (i != 0) {\
-					CreateComponent<CPP::Tree::Node::ParentEntityId>(namespaceEntityId, cppNamespaceEntityIds[i - 1]);\
-				}\
-				else {\
-					firstNamespaceEntityId = namespaceEntityId;\
-				}\
-			}\
-			return { firstNamespaceEntityId, lastNamespaceEntityId };\
-		}(parentEntityIds, entityId)
+//#define CPP__TREE__CREATE_CPP_NAMESPACES(parentEntityIds, entityId)\
+//		[this](const std::vector<ECS2::Entity::Id>& parentTableEntityIds, std::vector<ECS2::Entity::Id> cppTableEntityId) ->std::pair<ECS2::Entity::Id, ECS2::Entity::Id> {\
+//			ECS2::Entity::Id firstNamespaceEntityId = ECS2::Entity::Id::invalid_;\
+//			ECS2::Entity::Id lastNamespaceEntityId = ECS2::Entity::Id::invalid_;\
+//			std::vector<ECS2::Entity::Id> cppNamespaceEntityIds;\
+//			for (Common::Index i = 0; i < parentTableEntityIds.size(); i++) {\
+//				ECS2::Entity::Id parentTableEntityId = parentTableEntityIds[i]; \
+//				const ECS2::Entity::Id namespaceEntityId = CPP__TREE__DECL__CREATE_NAMESPACE(GetComponent<File::Table::Name>(parentTableEntityId)->name_);\
+//				cppNamespaceEntityIds.push_back(namespaceEntityId);\
+//			}\
+//			for (Common::Index i = 0; i < parentTableEntityIds.size(); i++) {\
+//				ECS2::Entity::Id parentTableEntityId = parentTableEntityIds[i];\
+//				const ECS2::ComponentsFilter tableCF = GetComponentsFilter(parentTableEntityId);\
+//				ASSERT(tableCF.IsSet<File::Table::Namespace::Tag>());\
+//				ASSERT(tableCF.IsSet<File::Table::ChildTablesEntityIds>());\
+//				const ECS2::Entity::Id namespaceEntityId = cppNamespaceEntityIds[i];\
+//				if (i != parentTableEntityIds.size() - 1) {\
+//					CreateComponent<CPP::Tree::Node::ChildEntityIds>(namespaceEntityId, std::vector{ cppNamespaceEntityIds[i + 1] });\
+//				}\
+//				else {\
+//					if(!cppTableEntityId.empty()){\
+//						CreateComponent<CPP::Tree::Node::ChildEntityIds>(namespaceEntityId, cppTableEntityId);\
+//					}\
+//					lastNamespaceEntityId = namespaceEntityId; \
+//				}\
+//				if (i != 0) {\
+//					CreateComponent<CPP::Tree::Node::ParentEntityId>(namespaceEntityId, cppNamespaceEntityIds[i - 1]);\
+//				}\
+//				else {\
+//					firstNamespaceEntityId = namespaceEntityId;\
+//				}\
+//			}\
+//			return { firstNamespaceEntityId, lastNamespaceEntityId };\
+//		}(parentEntityIds, entityId)
+
+template<class System>
+std::pair<ECS2::Entity::Id, ECS2::Entity::Id> CPP__TREE__CREATE_CPP_NAMESPACES(System* system, const std::vector<ECS2::Entity::Id>& parentTableEntityIds, std::vector<ECS2::Entity::Id> cppTableEntityId) {
+	ECS2::Entity::Id firstNamespaceEntityId = ECS2::Entity::Id::invalid_;
+	ECS2::Entity::Id lastNamespaceEntityId = ECS2::Entity::Id::invalid_;
+	std::vector<ECS2::Entity::Id> cppNamespaceEntityIds;
+	for (Common::Index i = 0; i < parentTableEntityIds.size(); i++) {
+		ECS2::Entity::Id parentTableEntityId = parentTableEntityIds[i];
+		const ECS2::Entity::Id namespaceEntityId = CPP__TREE__DECL__CREATE_NAMESPACE(system, system->template GetComponent<ECS::File::Table::Name>(parentTableEntityId)->name_);
+		cppNamespaceEntityIds.push_back(namespaceEntityId);
+	}
+	for (Common::Index i = 0; i < parentTableEntityIds.size(); i++) {
+		ECS2::Entity::Id parentTableEntityId = parentTableEntityIds[i];
+		const ECS2::ComponentsFilter tableCF = system->GetComponentsFilter(parentTableEntityId);
+		ASSERT(tableCF.IsSet<ECS::File::Table::Namespace::Tag>());
+		ASSERT(tableCF.IsSet<ECS::File::Table::ChildTablesEntityIds>());
+		const ECS2::Entity::Id namespaceEntityId = cppNamespaceEntityIds[i];
+		if (i != parentTableEntityIds.size() - 1) {
+			system->template CreateComponent<CPP::Tree::Node::ChildEntityIds>(namespaceEntityId, std::vector{ cppNamespaceEntityIds[i + 1] });
+		}
+		else {
+			if (!cppTableEntityId.empty()) {
+				system->template CreateComponent<CPP::Tree::Node::ChildEntityIds>(namespaceEntityId, cppTableEntityId);
+			}
+			lastNamespaceEntityId = namespaceEntityId;
+		}
+		if (i != 0) {
+			system->template CreateComponent<CPP::Tree::Node::ParentEntityId>(namespaceEntityId, cppNamespaceEntityIds[i - 1]);
+		}
+		else {
+			firstNamespaceEntityId = namespaceEntityId;
+		}
+	}
+	return { firstNamespaceEntityId, lastNamespaceEntityId };
+}
 
 
 /*						TYPES							*/
 //Example: 
 //std::shared_ptr
 //ECS2::World
-#define CPP__TREE__TYPE__CREATE_NAMED_TYPE(typeName)\
-	[this](const std::string& name){\
-		ECS2::Entity::Id typeEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
-		CreateComponent<CPP::Tree::Type::Name>(typeEntityId, name);\
-		return typeEntityId;\
-	}(typeName)
+//#define CPP__TREE__TYPE__CREATE_NAMED_TYPE(typeName)\
+//	[this](const std::string& name){\
+//		ECS2::Entity::Id typeEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
+//		CreateComponent<CPP::Tree::Type::Name>(typeEntityId, name);\
+//		return typeEntityId;\
+//	}(typeName)
 
-#define CPP__TREE__TYPE__CREATE_AUTO_TYPE()\
-	[this](){\
-		ECS2::Entity::Id typeEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
-		CreateComponent<CPP::Tree::Type::Name>(typeEntityId, "auto");\
-		return typeEntityId;\
-	}()
+template<class System>
+ECS2::Entity::Id CPP__TREE__TYPE__CREATE_NAMED_TYPE(System* system, const std::string& name) {
+	ECS2::Entity::Id typeEntityId = system->CreateEntity();
+	system->template CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);
+	system->template CreateComponent<CPP::Tree::Type::Name>(typeEntityId, name);
+	return typeEntityId;
+}
+
+//#define CPP__TREE__TYPE__CREATE_AUTO_TYPE()\
+//	[this](){
+//		ECS2::Entity::Id typeEntityId = system->CreateEntity();
+//		system->template CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
+//		system->template CreateComponent<CPP::Tree::Type::Name>(typeEntityId, "auto");\
+//		return typeEntityId;\
+//	}()
+
+template<class System>
+ECS2::Entity::Id CPP__TREE__TYPE__CREATE_AUTO_TYPE(System* system) {
+	ECS2::Entity::Id typeEntityId = system->CreateEntity();
+	system->template CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);
+	system->template CreateComponent<CPP::Tree::Type::Name>(typeEntityId, "auto");
+	return typeEntityId;
+}
 
 //returns std::vector<ECS2::Entity::Id>
-#define CPP__TREE__TYPE__CREATE_NAMED_TYPE_ENTITIES_VECTOR(...)\
-	[this](const std::vector<std::string> names){\
-	std::vector<ECS2::Entity::Id> typeEntityIds;\
-	for(std::string name : names){\
-		typeEntityIds.push_back(CPP__TREE__TYPE__CREATE_NAMED_TYPE(name));\
-	}\
-	return typeEntityIds;\
-	}(std::vector<std::string>{__VA_ARGS__})
+//#define CPP__TREE__TYPE__CREATE_NAMED_TYPE_ENTITIES_VECTOR(...)\
+//	[this](const std::vector<std::string> names){\
+//	std::vector<ECS2::Entity::Id> typeEntityIds;\
+//	for(std::string name : names){\
+//		typeEntityIds.push_back(CPP__TREE__TYPE__CREATE_NAMED_TYPE(name));\
+//	}\
+//	return typeEntityIds;\
+//	}(std::vector<std::string>{__VA_ARGS__})
+
+template<class System>
+std::vector<ECS2::Entity::Id> CPP__TREE__TYPE__CREATE_NAMED_TYPE_ENTITIES_VECTOR(System* system, const std::vector<std::string> names) {
+	std::vector<ECS2::Entity::Id> typeEntityIds;
+	for (std::string name : names) {
+		typeEntityIds.push_back(CPP__TREE__TYPE__CREATE_NAMED_TYPE(system, name));
+	}
+	return typeEntityIds;
+}
 
 //Example: 
 //std::shared_ptr
 //ECS2::World
-#define CPP__TREE__TYPE__CREATE_VOID_TYPE()\
-	[this](){\
-		ECS2::Entity::Id typeEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
-		CreateComponent<CPP::Tree::Type::BuiltinType>(typeEntityId, CPP::Tree::Type::BuiltinTypes::Void);\
-		return typeEntityId;\
-	}()
+//#define CPP__TREE__TYPE__CREATE_VOID_TYPE()\
+//	[this](){\
+//		ECS2::Entity::Id typeEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
+//		CreateComponent<CPP::Tree::Type::BuiltinType>(typeEntityId, CPP::Tree::Type::BuiltinTypes::Void);\
+//		return typeEntityId;\
+//	}()
+//
+//#define CPP__TREE__TYPE__CREATE_BOOL_TYPE()\
+//	[this](){\
+//		ECS2::Entity::Id typeEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
+//		CreateComponent<CPP::Tree::Type::BuiltinType>(typeEntityId, CPP::Tree::Type::BuiltinTypes::Bool);\
+//		return typeEntityId;\
+//	}()
+//
+//#define CPP__TREE__TYPE__CREATE_FLOAT_TYPE()\
+//	[this](){\
+//		ECS2::Entity::Id typeEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
+//		CreateComponent<CPP::Tree::Type::BuiltinType>(typeEntityId, CPP::Tree::Type::BuiltinTypes::Float);\
+//		return typeEntityId;\
+//	}()
+//
+//#define CPP__TREE__TYPE__CREATE_CHAR_TYPE()\
+//	[this](){\
+//		ECS2::Entity::Id typeEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
+//		CreateComponent<CPP::Tree::Type::BuiltinType>(typeEntityId, CPP::Tree::Type::BuiltinTypes::Char);\
+//		return typeEntityId;\
+//	}()
+//
+//#define CPP__TREE__TYPE__CREATE_CONST_CHAR_TYPE()\
+//	[this](){\
+//		ECS2::Entity::Id typeEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
+//		CreateComponent<CPP::Tree::Type::BuiltinType>(typeEntityId, CPP::Tree::Type::BuiltinTypes::Char);\
+//		CreateComponent<CPP::Tree::Type::ConstType>(typeEntityId);\
+//		return typeEntityId;\
+//	}()
+//
+//#define CPP__TREE__TYPE__CREATE_POINTER_TYPE(type)\
+//	[this](ECS2::Entity::Id pointerToTypeEntityId){\
+//		ECS2::Entity::Id typeEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
+//		CreateComponent<CPP::Tree::Type::PointerType>(typeEntityId, pointerToTypeEntityId);\
+//		return typeEntityId;\
+//	}(type)
+//
+//#define CPP__TREE__TYPE__CREATE_CONST_CHAR_POINTER_TYPE()\
+//	[this](){\
+//		return CPP__TREE__TYPE__CREATE_POINTER_TYPE(\
+//			CPP__TREE__TYPE__CREATE_CONST_CHAR_TYPE()\
+//		);\
+//	}()\
+//
+//#define CPP__TREE__TYPE__CREATE_REFERENCE_TYPE(type, rvalue)\
+//	[this](ECS2::Entity::Id referenceToTypeEntityId, bool isRvalue){\
+//		ECS2::Entity::Id typeEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
+//		CreateComponent<CPP::Tree::Type::ReferenceType>(typeEntityId, referenceToTypeEntityId, isRvalue);\
+//		return typeEntityId;\
+//	}(type, rvalue)
+//
+////Example: std::shared_ptr<ECS2::World>
+//// baseType<templateArgs>
+//#define CPP__TREE__TYPE__CREATE_TEMPLATE_SPECIALIZATION_TYPE(base, args)\
+//	[this](ECS2::Entity::Id baseType, std::vector<ECS2::Entity::Id> templateArgs){\
+//		ECS2::Entity::Id typeEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
+//		CreateComponent<CPP::Tree::Type::TemplateSpecializationType>(typeEntityId, baseType, templateArgs);\
+//		return typeEntityId;\
+//	}(base, args)
+//
+///*						STATEMENTS						*/
+//
+//#define CPP__TREE__STMT__CREATE_EXPRESSION_STATEMENT(expr)\
+//	[this](ECS2::Entity::Id exprEntityId){\
+//		ECS2::Entity::Id stmtEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Stmt::Tag>(stmtEntityId);\
+//		CreateComponent<CPP::Tree::Stmt::ExpressionStmt>(stmtEntityId, exprEntityId);\
+//		return stmtEntityId;\
+//	}(expr)
+//
+//#define CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT_COMPONENTS(entity, childs)\
+//	[this](ECS2::Entity::Id entityId, std::vector<ECS2::Entity::Id> childEntityIds){\
+//		CreateComponent<CPP::Tree::Node::Tag>(entityId);\
+//		CreateComponent<CPP::Tree::Stmt::Tag>(entityId);\
+//		CreateComponent<CPP::Tree::Stmt::CompoundStmt>(entityId);\
+//		CreateComponent<CPP::Tree::Node::ChildEntityIds>(entityId, childEntityIds);\
+//		return entityId;\
+//		}(entity, childs)
+//
+//#define CPP__TREE__STMT__CREATE_EMPTY_COMPOUND_STATEMENT()\
+//	[this](){\
+//		ECS2::Entity::Id emptyStatementEntityId = CreateEntity();\
+//		CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT_COMPONENTS(emptyStatementEntityId, std::vector<ECS2::Entity::Id>{});\
+//		return emptyStatementEntityId;\
+//		}()
+//
+//#define CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT(childs)\
+//	[this](std::vector<ECS2::Entity::Id> childEntityIds){\
+//		ECS2::Entity::Id emptyStatementEntityId = CreateEntity();\
+//		CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT_COMPONENTS(emptyStatementEntityId, childEntityIds);\
+//		return emptyStatementEntityId;\
+//		}(childs)
+//
+//#define CPP__TREE__STMT__CREATE_RETURN_STATEMENT(entityId)\
+//	[this](ECS2::Entity::Id returnExprEntityId){\
+//		ECS2::Entity::Id returnStmtEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Stmt::Tag>(returnStmtEntityId);\
+//		CreateComponent<CPP::Tree::Stmt::ReturnStmt>(returnStmtEntityId, returnExprEntityId);\
+//		return returnStmtEntityId;\
+//		}(entityId)
+//
+///*						PARAMETER DECLARATION								*/
+//#define CPP__TREE__DECL__CREATE_PARAMETER(type, name)\
+//	[this](ECS2::Entity::Id typeEntityId, std::string parameterName){\
+//		ECS2::Entity::Id parameterEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Node::Tag>(parameterEntityId);\
+//		CreateComponent<CPP::Tree::Decl::Tag>(parameterEntityId);\
+//		CreateComponent<CPP::Tree::Decl::Parameter>(parameterEntityId,\
+//			parameterName,\
+//			typeEntityId,\
+//			ECS2::Entity::Id::invalid_,\
+//			false\
+//		);\
+//		return parameterEntityId;\
+//	}(type, name)
+//
+////Type...
+//#define CPP__TREE__DECL__CREATE_PARAMETER_PACK_PARAMETER(type, name)\
+//	[this](ECS2::Entity::Id typeEntityId, std::string parameterName){\
+//		ECS2::Entity::Id parameterEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Node::Tag>(parameterEntityId);\
+//		CreateComponent<CPP::Tree::Decl::Tag>(parameterEntityId);\
+//		CreateComponent<CPP::Tree::Decl::Parameter>(parameterEntityId,\
+//			parameterName,\
+//			typeEntityId,\
+//			ECS2::Entity::Id::invalid_,\
+//			true\
+//		);\
+//		return parameterEntityId;\
+//	}(type, name)
+//
+///*						EXPRESSION							*/
+//
+//#define CPP__TREE__EXPR__CREATE_PACK_EXPANSION(pattern)\
+//	[this](ECS2::Entity::Id patternEntityId){\
+//		ECS2::Entity::Id packExpansionEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Expr::Tag>(packExpansionEntityId);\
+//		CreateComponent<CPP::Tree::Expr::PackExpansion>(packExpansionEntityId, patternEntityId);\
+//		return packExpansionEntityId;\
+//	}(pattern)
+//
+//#define CPP__TREE__EXPR__CREATE_MACRO_INVOCATION(name, args, macro)\
+//	[this](const std::string& macroName, std::vector<ECS2::Entity::Id> arguments, ECS2::Entity::Id macroEntityId){\
+//		ECS2::Entity::Id macroInvocationEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Expr::Tag>(macroInvocationEntityId);\
+//		CreateComponent<CPP::Tree::Expr::MacroInvocation>(macroInvocationEntityId, macroName, arguments, macroEntityId);\
+//		return macroInvocationEntityId;\
+//	}(name, args, macro)
+//
+//#define CPP__TREE__EXPR__CREATE_LITERAL_EXPR(text, suffix)\
+//	[this](const std::string& literal, const std::string& suffixStr){\
+//		ECS2::Entity::Id literalEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Expr::Tag>(literalEntityId);\
+//		CreateComponent<CPP::Tree::Expr::Literal>(literalEntityId,\
+//			Common::Limits<decltype(CPP::Tree::Expr::Literal::kind_)>::Max(),\
+//			literal, suffixStr);\
+//		return literalEntityId;\
+//	}(text, suffix)
+//
+//#define CPP__TREE__EXPR__CREATE_MEMBER_PTR_EXPR(type, member)\
+//	[this](ECS2::Entity::Id typeEntityId, const std::string& memberName){\
+//		ECS2::Entity::Id memberPtrExprEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Expr::Tag>(memberPtrExprEntityId);\
+//		CreateComponent<CPP::Tree::Expr::MemberPtrExpr>(memberPtrExprEntityId, typeEntityId, memberName);\
+//		return memberPtrExprEntityId;\
+//	}(type, member)
+//
+//#define CPP__TREE__EXPR__CREATE_IDENTIFIER_EXPR(identifier)\
+//	[this](const std::string& identifierName){\
+//		ECS2::Entity::Id identifierExprEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Expr::Tag>(identifierExprEntityId);\
+//		CreateComponent<CPP::Tree::Expr::Identifier>(identifierExprEntityId, identifierName);\
+//		return identifierExprEntityId;\
+//	}(identifier)
+//
+//#define CPP__TREE__EXPR__CREATE_UNARY_OPERATION(operation, operand)\
+//	[this](CPP::Tree::Expr::UnaryOpType operationType, ECS2::Entity::Id operantEntityId){\
+//		ECS2::Entity::Id unaryOpExprEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Expr::Tag>(unaryOpExprEntityId);\
+//		CreateComponent<CPP::Tree::Expr::UnaryOp>(unaryOpExprEntityId,operationType,operantEntityId);\
+//		return unaryOpExprEntityId;\
+//	}(operation, operand)
+//
+//#define CPP__TREE__EXPR__CREATE_BINARY_OPERATION(operation, left, right)\
+//	[this](CPP::Tree::Expr::BinaryOpType operationType, ECS2::Entity::Id leftEntityId,ECS2::Entity::Id rightEntityId){\
+//		ECS2::Entity::Id binaryOpExprEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Expr::Tag>(binaryOpExprEntityId);\
+//		CreateComponent<CPP::Tree::Expr::BinaryOp>(binaryOpExprEntityId, operationType, leftEntityId, rightEntityId);\
+//		return binaryOpExprEntityId;\
+//	}(operation, left, right)
+//
+//#define CPP__TREE__EXPR__CREATE_LAMBDA_COMPONENTS(lambda, captureTypeEnum, lambdaCaptures, parameters, body)\
+//	[this](	ECS2::Entity::Id lambdaEntityId, CPP::Tree::Expr::CaptureType captureType, std::vector<CPP::Tree::Expr::LambdaCapture> captures,\
+//			std::vector<ECS2::Entity::Id> parameterEntityIds,\
+//			ECS2::Entity::Id bodyEntityId){\
+//			CreateComponent<CPP::Tree::Expr::Tag>(lambdaEntityId);\
+//			CreateComponent<CPP::Tree::Expr::Lambda>(lambdaEntityId,\
+//				captureType,\
+//				captures,\
+//				parameterEntityIds,\
+//				bodyEntityId);\
+//	}(lambda,captureTypeEnum, lambdaCaptures, parameters, body)	
+//
+//#define CPP__TREE__EXPR__CREATE_LAMBDA(captureTypeEnum, lambdaCaptures, parameters, body)\
+//	[this](CPP::Tree::Expr::CaptureType captureType, std::vector<CPP::Tree::Expr::LambdaCapture> captures,\
+//			std::vector<ECS2::Entity::Id> parameterEntityIds,\
+//			ECS2::Entity::Id bodyEntityId){\
+//		ECS2::Entity::Id lambdaEntityId = CreateEntity();\
+//		CPP__TREE__EXPR__CREATE_LAMBDA_COMPONENTS(lambdaEntityId, captureType, captures, parameterEntityIds, bodyEntityId);\
+//		return lambdaEntityId;\
+//	}(captureTypeEnum, lambdaCaptures, parameters, body)
+//
+//#define CPP__TREE__EXPR__CREATE_MEMBER_ACCESS_EXPR_COMPONENTS(expr, object, member, arrow)\
+//		[this](ECS2::Entity::Id exprEntityId, ECS2::Entity::Id objectEntityId, const std::string& memberName, bool isArrow){\
+//		CreateComponent<CPP::Tree::Expr::Tag>(exprEntityId);\
+//		CreateComponent<CPP::Tree::Expr::MemberAccess>(exprEntityId, objectEntityId, memberName, isArrow);\
+//	}(expr, object, member, arrow)
+//
+//#define CPP__TREE__EXPR__CREATE_MEMBER_ACCESS_EXPR(object, member, arrow)\
+//		[this](ECS2::Entity::Id objectEntityId, const std::string& memberName, bool isArrow){\
+//		ECS2::Entity::Id exprEntityId = CreateEntity();\
+//		CPP__TREE__EXPR__CREATE_MEMBER_ACCESS_EXPR_COMPONENTS(exprEntityId, objectEntityId, memberName, isArrow);\
+//		return exprEntityId;\
+//	}(object, member, arrow)
+//
+//#define CPP__TREE__EXPR__CREATE_CALL_EXPR_COMPONENTS(callExpr, callee, templateArgs, args)\
+//	[this](\
+//		ECS2::Entity::Id callExprEntityId,\
+//		ECS2::Entity::Id calleeEntityId,\
+//		std::vector<ECS2::Entity::Id> templateArgumentEntityIds,\
+//		std::vector<ECS2::Entity::Id> argumentEntityIds){\
+//	CreateComponent<CPP::Tree::Expr::Tag>(callExprEntityId);\
+//	CreateComponent<CPP::Tree::Expr::CallExpr>(callExprEntityId,\
+//		calleeEntityId,\
+//		templateArgumentEntityIds,\
+//		argumentEntityIds);\
+//	}(callExpr, callee, templateArgs, args)
+//
+//#define CPP__TREE__EXPR__CREATE_CALL_EXPR(callee, templateArgs, args)\
+//	[this](ECS2::Entity::Id calleeEntityId,\
+//		std::vector<ECS2::Entity::Id> templateArgumentEntityIds,\
+//		std::vector<ECS2::Entity::Id> argumentEntityIds){\
+//		ECS2::Entity::Id callExprEntityId = CreateEntity();\
+//		CPP__TREE__EXPR__CREATE_CALL_EXPR_COMPONENTS(\
+//			callExprEntityId,\
+//			calleeEntityId,\
+//			templateArgumentEntityIds, argumentEntityIds);\
+//		return callExprEntityId;\
+//	}(callee, templateArgs, args)
+//
+//#define CPP__TREE__EXPR__CREATE_CALL_EXPR_NO_ARGS(callee)\
+//	[this](ECS2::Entity::Id calleeEntityId){\
+//		ECS2::Entity::Id callExprEntityId = CreateEntity();\
+//		CPP__TREE__EXPR__CREATE_CALL_EXPR_COMPONENTS(\
+//			callExprEntityId,\
+//			calleeEntityId,\
+//			std::vector<ECS2::Entity::Id>{}, std::vector<ECS2::Entity::Id>{});\
+//		return callExprEntityId;\
+//	}(callee)
+//
+//#define CPP__TREE__EXPR__CREATE_ARRAY_SUBSCRIPT(array_, index)\
+//	[this](ECS2::Entity::Id arrayEntityId, ECS2::Entity::Id indexEntityId){\
+//		ECS2::Entity::Id arraySubscriptEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Expr::Tag>(arraySubscriptEntityId);\
+//		CreateComponent<CPP::Tree::Expr::ArraySubscript>(arraySubscriptEntityId, arrayEntityId, indexEntityId);\
+//		return arraySubscriptEntityId;\
+//	}(array_, index)
+//
+//#define CPP__TREE__EXPR__CREATE_INIT_LIST(inits)\
+//	[this](std::vector<ECS2::Entity::Id> initEntityIds){\
+//		ECS2::Entity::Id initListEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Expr::Tag>(initListEntityId);\
+//		CreateComponent<CPP::Tree::Expr::InitList>(initListEntityId, initEntityIds);\
+//		return initListEntityId;\
+//	}(inits)
+//
+///*						FUNCTION					*/
+//#define CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(function, returnValue, templateParams, name, templateExplicitParams, parent, childs)\
+//	[this](\
+//		ECS2::Entity::Id functionEntityId,\
+//		ECS2::Entity::Id returnValueEntityId,\
+//		std::vector<ECS2::Entity::Id> templateParameters,\
+//		const std::string& funcName,\
+//		std::vector<ECS2::Entity::Id> templateExplicitParameters,\
+//		ECS2::Entity::Id parentEntityId,\
+//		std::vector<ECS2::Entity::Id> childEntityIds){\
+//			CreateComponent<CPP::Tree::Node::Tag>(functionEntityId);\
+//			CreateComponent<CPP::Tree::Decl::Tag>(functionEntityId);\
+//			CreateComponent<CPP::Tree::Decl::Function>(functionEntityId, returnValueEntityId);\
+//			CreateComponent<CPP::Tree::Node::Name>(functionEntityId, funcName);\
+//			if(!templateParameters.empty()){\
+//				CreateComponent<CPP::Tree::Decl::TemplateDecl>(functionEntityId, templateParameters);\
+//			}\
+//			if(!templateExplicitParameters.empty()){\
+//				CreateComponent<CPP::Tree::Decl::ExplicitTemplateArgs>(functionEntityId, templateExplicitParameters);\
+//			}\
+//			if(parentEntityId.IsValid()){\
+//				CreateComponent<CPP::Tree::Node::ParentEntityId>(functionEntityId, parentEntityId); \
+//			}\
+//			CreateComponent<CPP::Tree::Node::ChildEntityIds>(functionEntityId, childEntityIds);\
+//			return functionEntityId;\
+//		}(function, returnValue, templateParams, name,templateExplicitParams, parent, childs)
+//
+//#define CPP__TREE__DECL__CREATE_CONSTRUCTOR(name, initializers, parent, parentDecl, childs)\
+//	[this](\
+//		const std::string& constructorName,\
+//		std::vector<ECS2::Entity::Id> initializerEntityIds,\
+//		ECS2::Entity::Id parentEntityId,\
+//		ECS2::Entity::Id parentDeclEntityId, \
+//		std::vector<ECS2::Entity::Id> childEntityId){\
+//		ECS2::Entity::Id constructorEntityId = CreateEntity();\
+//		CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(\
+//			constructorEntityId,\
+//			ECS2::Entity::Id::invalid_,\
+//			std::vector<ECS2::Entity::Id>{},\
+//			constructorName,\
+//			std::vector<ECS2::Entity::Id>{},\
+//			parentEntityId,\
+//			childEntityId\
+//			);\
+//		CreateComponent<CPP::Tree::Decl::Constructor>(constructorEntityId, parentDeclEntityId);\
+//		if(!initializerEntityIds.empty()) {\
+//			CreateComponent<CPP::Tree::ConstructorInitList>(constructorEntityId, initializerEntityIds);\
+//		}\
+//		return constructorEntityId;\
+//		}(name, initializers, parent, parentDecl, childs)
+//
+//#define CPP__TREE__DECL__CREATE_EMPTY_CONSTRUCTOR(name, parent, parentDecl)\
+//	[this](const std::string& constructorName,ECS2::Entity::Id parentEntityId, ECS2::Entity::Id parentDeclEntityId){\
+//		ECS2::Entity::Id constructorEntityId = CreateEntity();\
+//		CPP__TREE__DECL__CREATE_CONSTRUCTOR(\
+//			constructorName,\
+//			std::vector<ECS2::Entity::Id>{},\
+//			parentEntityId, parentDeclEntityId, std::vector<ECS2::Entity::Id>{CPP__TREE__STMT__CREATE_EMPTY_COMPOUND_STATEMENT()});\
+//		return constructorEntityId;\
+//		}(name, parent, parentDecl)
+//
+//#define CPP__TREE__DECL__CREATE_PUBLIC_EMPTY_CONSTRUCTOR(name, parent, parentDecl)\
+//	[this](const std::string& constructorName,ECS2::Entity::Id parentEntityId, ECS2::Entity::Id parentDeclEntityId){\
+//		ECS2::Entity::Id constructorEntityId = CPP__TREE__DECL__CREATE_CONSTRUCTOR(\
+//			constructorName,\
+//			std::vector<ECS2::Entity::Id>{},\
+//			parentEntityId,parentDeclEntityId, std::vector<ECS2::Entity::Id>{CPP__TREE__STMT__CREATE_EMPTY_COMPOUND_STATEMENT()});\
+//		CreateComponent<CPP::Tree::Access::Public_>(constructorEntityId);\
+//		return constructorEntityId;\
+//		}(name, parent, parentDecl)
+//
+//
+//
+//#define CPP__TREE__CREATE_CONSTRUCTOR_INITIALIZER(member, expr)\
+//	[this](ECS2::Entity::Id memberEntityId, ECS2::Entity::Id exprEntityId){\
+//		ECS2::Entity::Id initializer = CreateEntity();\
+//		CreateComponent<CPP::Tree::ConstructorInitializer>(initializer,\
+//			memberEntityId,\
+//			exprEntityId \
+//		);\
+//		return initializer;\
+//	}(member, expr)
+//
+//#define CPP__TREE__DECL__CREATE_FUNCTION(returnValue, name, parent, childs)\
+//	[this](ECS2::Entity::Id returnValueEntityId,\
+//		const std::string& funcName,\
+//		ECS2::Entity::Id parentEntityId,\
+//		std::vector<ECS2::Entity::Id> childEntityIds){\
+//		ECS2::Entity::Id functionEntityId = CreateEntity();\
+//		CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(\
+//			functionEntityId,\
+//			returnValueEntityId,\
+//			std::vector<ECS2::Entity::Id>{},\
+//			funcName,\
+//			std::vector<ECS2::Entity::Id>{},\
+//			parentEntityId,\
+//			childEntityIds\
+//			);\
+//		return functionEntityId;\
+//		}(returnValue, name, parent, childs)
+//
+//#define CPP__TREE__DECL__CREATE_TEMPLATE_FUNCTION(returnValue, templateParams, name, templateExplicitParams, parent, childs)\
+//	[this](ECS2::Entity::Id returnValueEntityId,\
+//		std::vector<ECS2::Entity::Id> templateParams,\
+//		const std::string& funcName,\
+//		std::vector<ECS2::Entity::Id> templateExplicitParameters,\
+//		ECS2::Entity::Id parentEntityId,\
+//		std::vector<ECS2::Entity::Id> childEntityIds){\
+//		ECS2::Entity::Id functionEntityId = CreateEntity();\
+//		CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(\
+//			functionEntityId,\
+//			returnValueEntityId,\
+//			templateParams,\
+//			funcName,\
+//			templateExplicitParameters,\
+//			parentEntityId,\
+//			childEntityIds\
+//			);\
+//		return functionEntityId;\
+//		}(returnValue, name, templateExplicitParams, parent, childs)
+//
+//
+//#define CPP__TREE__DECL__CREATE_PUBLIC_METHOD(returnValue, name, parent, childs)\
+//	[this](ECS2::Entity::Id returnValueEntityId,\
+//		const std::string& funcName,\
+//		ECS2::Entity::Id parentEntityId,\
+//		std::vector<ECS2::Entity::Id> childEntityIds){\
+//		ECS2::Entity::Id functionEntityId = CPP__TREE__DECL__CREATE_FUNCTION(\
+//			returnValueEntityId,\
+//			funcName,\
+//			parentEntityId,\
+//			childEntityIds);\
+//		CreateComponent<CPP::Tree::Access::Public_>(functionEntityId);\
+//		return functionEntityId;\
+//		}(returnValue, name, parent, childs)
+//
+//#define CPP__TREE__DECL__CREATE_PUBLIC_STATIC_METHOD(returnValue, name, parent, childs)\
+//	[this](ECS2::Entity::Id returnValueEntityId,\
+//		const std::string& funcName,\
+//		ECS2::Entity::Id parentEntityId,\
+//		std::vector<ECS2::Entity::Id> childEntityIds){\
+//		ECS2::Entity::Id functionEntityId = CPP__TREE__DECL__CREATE_PUBLIC_METHOD(\
+//			returnValueEntityId, \
+//			funcName, \
+//			parentEntityId, \
+//			childEntityIds);\
+//		CreateComponent<CPP::Tree::StorageClass::Static_>(functionEntityId);\
+//		return functionEntityId;\
+//		}(returnValue, name, parent, childs)
+//
+//#define CPP__TREE__DECL__CREATE_PUBLIC_STATIC_INLINE_METHOD(returnValue, name, parent, childs)\
+//	[this](ECS2::Entity::Id returnValueEntityId,\
+//		const std::string& funcName,\
+//		ECS2::Entity::Id parentEntityId,\
+//		std::vector<ECS2::Entity::Id> childEntityIds){\
+//		ECS2::Entity::Id functionEntityId = CPP__TREE__DECL__CREATE_PUBLIC_STATIC_METHOD(\
+//			returnValueEntityId, \
+//			funcName, \
+//			parentEntityId, \
+//			childEntityIds);\
+//		CreateComponent<CPP::Tree::Inline_>(functionEntityId);\
+//		return functionEntityId;\
+//		}(returnValue, name, parent, childs)
+//
+//#define CPP__TREE__DECL__CREATE_USING_DIRECTIVE(namespaceName)\
+//	[this](std::string namespaceNameStr){\
+//		ECS2::Entity::Id usingDirectiveEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Decl::Tag>(usingDirectiveEntityId);\
+//		CreateComponent<CPP::Tree::Decl::UsingDirective>(usingDirectiveEntityId, namespaceNameStr);\
+//		return usingDirectiveEntityId;\
+//	}(namespaceName)
+//
+///*					TEMPLATE TYPE PARAMETER			*/
+//#define CPP__TREE__DECL__CREATE_TEMPLATE_TYPE_PARAMETER(typeName, defaultType, isParameterPack)\
+//	[this](const std::string& name, ECS2::Entity::Id defaultTypeEntityId, bool isPack){\
+//		ECS2::Entity::Id templateTypeParameterEntityId = CreateEntity();\
+//		CreateComponent<CPP::Tree::Decl::Tag>(templateTypeParameterEntityId);\
+//		CreateComponent<CPP::Tree::Decl::TemplateTypeParam>(templateTypeParameterEntityId, name, defaultTypeEntityId, isPack);\
+//		return templateTypeParameterEntityId;\
+//	}(typeName, defaultType, isParameterPack)
+//
+///*					CLASS DECLARATION					*/
+//#define CPP__TREE__DECL__CREATE_CLASS_COMPONENTS(classId, name, parent, childs)\
+//	[this](ECS2::Entity::Id classEntityId, const std::string& className, ECS2::Entity::Id parentEntityId, std::vector<ECS2::Entity::Id> childEntityIds) {\
+//		CreateComponent<CPP::Tree::Node::Tag>(classEntityId);\
+//		CreateComponent<CPP::Tree::Decl::Tag>(classEntityId);\
+//		CreateComponent<CPP::Tree::Decl::Class_>(classEntityId);\
+//		CreateComponent<CPP::Tree::Node::Name>(classEntityId, className);\
+//		if(parentEntityId.IsValid()){\
+//			CreateComponent<CPP::Tree::Node::ParentEntityId>(classEntityId, parentEntityId); \
+//		}\
+//		if(!childEntityIds.empty()){\
+//			CreateComponent<CPP::Tree::Node::ChildEntityIds>(classEntityId, childEntityIds); \
+//		}\
+//	}(classId, name, parent, childs)
+//
+//#define CPP__TREE__DECL__CREATE_CLASS(name)\
+//	[this](const std::string& className){\
+//	}(name)
+//
+//
+//
+///*Help*/
+//
+//#define CPP__TREE__EXPR__CREATE_CALL_EXPR_NO_PARAMETERS(identifire)\
+//CPP__TREE__EXPR__CREATE_CALL_EXPR(\
+//	CPP__TREE__EXPR__CREATE_IDENTIFIER_EXPR(identifire),\
+//	CPP__TREE__CREATE_ENTITIES_VECTOR(),\
+//	CPP__TREE__CREATE_ENTITIES_VECTOR()\
+//)
+/* ======================== TYPES ======================== */
 
-#define CPP__TREE__TYPE__CREATE_BOOL_TYPE()\
-	[this](){\
-		ECS2::Entity::Id typeEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
-		CreateComponent<CPP::Tree::Type::BuiltinType>(typeEntityId, CPP::Tree::Type::BuiltinTypes::Bool);\
-		return typeEntityId;\
-	}()
+template<class System>
+ECS2::Entity::Id CPP__TREE__TYPE__CREATE_VOID_TYPE(System* system) {
+    ECS2::Entity::Id typeEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);
+    system->template CreateComponent<CPP::Tree::Type::BuiltinType>(
+        typeEntityId, CPP::Tree::Type::BuiltinTypes::Void);
+    return typeEntityId;
+}
 
-#define CPP__TREE__TYPE__CREATE_FLOAT_TYPE()\
-	[this](){\
-		ECS2::Entity::Id typeEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
-		CreateComponent<CPP::Tree::Type::BuiltinType>(typeEntityId, CPP::Tree::Type::BuiltinTypes::Float);\
-		return typeEntityId;\
-	}()
+template<class System>
+ECS2::Entity::Id CPP__TREE__TYPE__CREATE_BOOL_TYPE(System* system) {
+    ECS2::Entity::Id typeEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);
+    system->template CreateComponent<CPP::Tree::Type::BuiltinType>(
+        typeEntityId, CPP::Tree::Type::BuiltinTypes::Bool);
+    return typeEntityId;
+}
 
-#define CPP__TREE__TYPE__CREATE_CHAR_TYPE()\
-	[this](){\
-		ECS2::Entity::Id typeEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
-		CreateComponent<CPP::Tree::Type::BuiltinType>(typeEntityId, CPP::Tree::Type::BuiltinTypes::Char);\
-		return typeEntityId;\
-	}()
+template<class System>
+ECS2::Entity::Id CPP__TREE__TYPE__CREATE_FLOAT_TYPE(System* system) {
+    ECS2::Entity::Id typeEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);
+    system->template CreateComponent<CPP::Tree::Type::BuiltinType>(
+        typeEntityId, CPP::Tree::Type::BuiltinTypes::Float);
+    return typeEntityId;
+}
 
-#define CPP__TREE__TYPE__CREATE_CONST_CHAR_TYPE()\
-	[this](){\
-		ECS2::Entity::Id typeEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
-		CreateComponent<CPP::Tree::Type::BuiltinType>(typeEntityId, CPP::Tree::Type::BuiltinTypes::Char);\
-		CreateComponent<CPP::Tree::Type::ConstType>(typeEntityId);\
-		return typeEntityId;\
-	}()
+template<class System>
+ECS2::Entity::Id CPP__TREE__TYPE__CREATE_CHAR_TYPE(System* system) {
+    ECS2::Entity::Id typeEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);
+    system->template CreateComponent<CPP::Tree::Type::BuiltinType>(
+        typeEntityId, CPP::Tree::Type::BuiltinTypes::Char);
+    return typeEntityId;
+}
 
-#define CPP__TREE__TYPE__CREATE_POINTER_TYPE(type)\
-	[this](ECS2::Entity::Id pointerToTypeEntityId){\
-		ECS2::Entity::Id typeEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
-		CreateComponent<CPP::Tree::Type::PointerType>(typeEntityId, pointerToTypeEntityId);\
-		return typeEntityId;\
-	}(type)
+template<class System>
+ECS2::Entity::Id CPP__TREE__TYPE__CREATE_CONST_CHAR_TYPE(System* system) {
+    ECS2::Entity::Id typeEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);
+    system->template CreateComponent<CPP::Tree::Type::BuiltinType>(
+        typeEntityId, CPP::Tree::Type::BuiltinTypes::Char);
+    system->template CreateComponent<CPP::Tree::Type::ConstType>(typeEntityId);
+    return typeEntityId;
+}
 
-#define CPP__TREE__TYPE__CREATE_CONST_CHAR_POINTER_TYPE()\
-	[this](){\
-		return CPP__TREE__TYPE__CREATE_POINTER_TYPE(\
-			CPP__TREE__TYPE__CREATE_CONST_CHAR_TYPE()\
-		);\
-	}()\
+template<class System>
+ECS2::Entity::Id CPP__TREE__TYPE__CREATE_POINTER_TYPE(
+    System* system,
+    ECS2::Entity::Id pointerToTypeEntityId) {
+    ECS2::Entity::Id typeEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);
+    system->template CreateComponent<CPP::Tree::Type::PointerType>(
+        typeEntityId, pointerToTypeEntityId);
+    return typeEntityId;
+}
 
-#define CPP__TREE__TYPE__CREATE_REFERENCE_TYPE(type, rvalue)\
-	[this](ECS2::Entity::Id referenceToTypeEntityId, bool isRvalue){\
-		ECS2::Entity::Id typeEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
-		CreateComponent<CPP::Tree::Type::ReferenceType>(typeEntityId, referenceToTypeEntityId, isRvalue);\
-		return typeEntityId;\
-	}(type, rvalue)
+template<class System>
+ECS2::Entity::Id CPP__TREE__TYPE__CREATE_CONST_CHAR_POINTER_TYPE(System* system) {
+    return CPP__TREE__TYPE__CREATE_POINTER_TYPE(
+        system,
+        CPP__TREE__TYPE__CREATE_CONST_CHAR_TYPE(system));
+}
 
-//Example: std::shared_ptr<ECS2::World>
-// baseType<templateArgs>
-#define CPP__TREE__TYPE__CREATE_TEMPLATE_SPECIALIZATION_TYPE(base, args)\
-	[this](ECS2::Entity::Id baseType, std::vector<ECS2::Entity::Id> templateArgs){\
-		ECS2::Entity::Id typeEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);\
-		CreateComponent<CPP::Tree::Type::TemplateSpecializationType>(typeEntityId, baseType, templateArgs);\
-		return typeEntityId;\
-	}(base, args)
+template<class System>
+ECS2::Entity::Id CPP__TREE__TYPE__CREATE_REFERENCE_TYPE(
+    System* system,
+    ECS2::Entity::Id referenceToTypeEntityId,
+    bool isRvalue) {
+    ECS2::Entity::Id typeEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);
+    system->template CreateComponent<CPP::Tree::Type::ReferenceType>(
+        typeEntityId, referenceToTypeEntityId, isRvalue);
+    return typeEntityId;
+}
 
-/*						STATEMENTS						*/
+template<class System>
+ECS2::Entity::Id CPP__TREE__TYPE__CREATE_TEMPLATE_SPECIALIZATION_TYPE(
+    System* system,
+    ECS2::Entity::Id baseType,
+    std::vector<ECS2::Entity::Id> templateArgs) {
+    ECS2::Entity::Id typeEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Type::Tag>(typeEntityId);
+    system->template CreateComponent<CPP::Tree::Type::TemplateSpecializationType>(
+        typeEntityId, baseType, templateArgs);
+    return typeEntityId;
+}
 
-#define CPP__TREE__STMT__CREATE_EXPRESSION_STATEMENT(expr)\
-	[this](ECS2::Entity::Id exprEntityId){\
-		ECS2::Entity::Id stmtEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Stmt::Tag>(stmtEntityId);\
-		CreateComponent<CPP::Tree::Stmt::ExpressionStmt>(stmtEntityId, exprEntityId);\
-		return stmtEntityId;\
-	}(expr)
+/* ======================== STATEMENTS ======================== */
 
-#define CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT_COMPONENTS(entity, childs)\
-	[this](ECS2::Entity::Id entityId, std::vector<ECS2::Entity::Id> childEntityIds){\
-		CreateComponent<CPP::Tree::Node::Tag>(entityId);\
-		CreateComponent<CPP::Tree::Stmt::Tag>(entityId);\
-		CreateComponent<CPP::Tree::Stmt::CompoundStmt>(entityId);\
-		CreateComponent<CPP::Tree::Node::ChildEntityIds>(entityId, childEntityIds);\
-		return entityId;\
-		}(entity, childs)
+template<class System>
+ECS2::Entity::Id CPP__TREE__STMT__CREATE_EXPRESSION_STATEMENT(
+    System* system,
+    ECS2::Entity::Id exprEntityId) {
+    ECS2::Entity::Id stmtEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Stmt::Tag>(stmtEntityId);
+    system->template CreateComponent<CPP::Tree::Stmt::ExpressionStmt>(
+        stmtEntityId, exprEntityId);
+    return stmtEntityId;
+}
 
-#define CPP__TREE__STMT__CREATE_EMPTY_COMPOUND_STATEMENT()\
-	[this](){\
-		ECS2::Entity::Id emptyStatementEntityId = CreateEntity();\
-		CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT_COMPONENTS(emptyStatementEntityId, std::vector<ECS2::Entity::Id>{});\
-		return emptyStatementEntityId;\
-		}()
+template<class System>
+ECS2::Entity::Id CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT_COMPONENTS(
+    System* system,
+    ECS2::Entity::Id entityId,
+    std::vector<ECS2::Entity::Id> childEntityIds) {
+    system->template CreateComponent<CPP::Tree::Node::Tag>(entityId);
+    system->template CreateComponent<CPP::Tree::Stmt::Tag>(entityId);
+    system->template CreateComponent<CPP::Tree::Stmt::CompoundStmt>(entityId);
+    system->template CreateComponent<CPP::Tree::Node::ChildEntityIds>(
+        entityId, childEntityIds);
+    return entityId;
+}
 
-#define CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT(childs)\
-	[this](std::vector<ECS2::Entity::Id> childEntityIds){\
-		ECS2::Entity::Id emptyStatementEntityId = CreateEntity();\
-		CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT_COMPONENTS(emptyStatementEntityId, childEntityIds);\
-		return emptyStatementEntityId;\
-		}(childs)
+template<class System>
+ECS2::Entity::Id CPP__TREE__STMT__CREATE_EMPTY_COMPOUND_STATEMENT(System* system) {
+    ECS2::Entity::Id emptyStatementEntityId = system->CreateEntity();
+    return CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT_COMPONENTS(
+        system, emptyStatementEntityId, {});
+}
 
-#define CPP__TREE__STMT__CREATE_RETURN_STATEMENT(entityId)\
-	[this](ECS2::Entity::Id returnExprEntityId){\
-		ECS2::Entity::Id returnStmtEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Stmt::Tag>(returnStmtEntityId);\
-		CreateComponent<CPP::Tree::Stmt::ReturnStmt>(returnStmtEntityId, returnExprEntityId);\
-		return returnStmtEntityId;\
-		}(entityId)
+template<class System>
+ECS2::Entity::Id CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT(
+    System* system,
+    std::vector<ECS2::Entity::Id> childEntityIds) {
+    ECS2::Entity::Id compoundStatementEntityId = system->CreateEntity();
+    return CPP__TREE__STMT__CREATE_COMPOUND_STATEMENT_COMPONENTS(
+        system, compoundStatementEntityId, childEntityIds);
+}
 
-/*						PARAMETER DECLARATION								*/
-#define CPP__TREE__DECL__CREATE_PARAMETER(type, name)\
-	[this](ECS2::Entity::Id typeEntityId, std::string parameterName){\
-		ECS2::Entity::Id parameterEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Node::Tag>(parameterEntityId);\
-		CreateComponent<CPP::Tree::Decl::Tag>(parameterEntityId);\
-		CreateComponent<CPP::Tree::Decl::Parameter>(parameterEntityId,\
-			parameterName,\
-			typeEntityId,\
-			ECS2::Entity::Id::invalid_,\
-			false\
-		);\
-		return parameterEntityId;\
-	}(type, name)
+template<class System>
+ECS2::Entity::Id CPP__TREE__STMT__CREATE_RETURN_STATEMENT(
+    System* system,
+    ECS2::Entity::Id returnExprEntityId) {
+    ECS2::Entity::Id returnStmtEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Stmt::Tag>(returnStmtEntityId);
+    system->template CreateComponent<CPP::Tree::Stmt::ReturnStmt>(
+        returnStmtEntityId, returnExprEntityId);
+    return returnStmtEntityId;
+}
 
-//Type...
-#define CPP__TREE__DECL__CREATE_PARAMETER_PACK_PARAMETER(type, name)\
-	[this](ECS2::Entity::Id typeEntityId, std::string parameterName){\
-		ECS2::Entity::Id parameterEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Node::Tag>(parameterEntityId);\
-		CreateComponent<CPP::Tree::Decl::Tag>(parameterEntityId);\
-		CreateComponent<CPP::Tree::Decl::Parameter>(parameterEntityId,\
-			parameterName,\
-			typeEntityId,\
-			ECS2::Entity::Id::invalid_,\
-			true\
-		);\
-		return parameterEntityId;\
-	}(type, name)
+/* ======================== PARAMETER DECLARATION ======================== */
 
-/*						EXPRESSION							*/
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_PARAMETER(
+    System* system,
+    ECS2::Entity::Id typeEntityId,
+    std::string parameterName) {
+    ECS2::Entity::Id parameterEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Node::Tag>(parameterEntityId);
+    system->template CreateComponent<CPP::Tree::Decl::Tag>(parameterEntityId);
+    system->template CreateComponent<CPP::Tree::Decl::Parameter>(
+        parameterEntityId,
+        parameterName,
+        typeEntityId,
+        ECS2::Entity::Id::invalid_,
+        false);
+    return parameterEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_PACK_EXPANSION(pattern)\
-	[this](ECS2::Entity::Id patternEntityId){\
-		ECS2::Entity::Id packExpansionEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Expr::Tag>(packExpansionEntityId);\
-		CreateComponent<CPP::Tree::Expr::PackExpansion>(packExpansionEntityId, patternEntityId);\
-		return packExpansionEntityId;\
-	}(pattern)
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_PARAMETER_PACK_PARAMETER(
+    System* system,
+    ECS2::Entity::Id typeEntityId,
+    std::string parameterName) {
+    ECS2::Entity::Id parameterEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Node::Tag>(parameterEntityId);
+    system->template CreateComponent<CPP::Tree::Decl::Tag>(parameterEntityId);
+    system->template CreateComponent<CPP::Tree::Decl::Parameter>(
+        parameterEntityId,
+        parameterName,
+        typeEntityId,
+        ECS2::Entity::Id::invalid_,
+        true);
+    return parameterEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_MACRO_INVOCATION(name, args, macro)\
-	[this](const std::string& macroName, std::vector<ECS2::Entity::Id> arguments, ECS2::Entity::Id macroEntityId){\
-		ECS2::Entity::Id macroInvocationEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Expr::Tag>(macroInvocationEntityId);\
-		CreateComponent<CPP::Tree::Expr::MacroInvocation>(macroInvocationEntityId, macroName, arguments, macroEntityId);\
-		return macroInvocationEntityId;\
-	}(name, args, macro)
+/* ======================== EXPRESSIONS ======================== */
 
-#define CPP__TREE__EXPR__CREATE_LITERAL_EXPR(text, suffix)\
-	[this](const std::string& literal, const std::string& suffixStr){\
-		ECS2::Entity::Id literalEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Expr::Tag>(literalEntityId);\
-		CreateComponent<CPP::Tree::Expr::Literal>(literalEntityId,\
-			Common::Limits<decltype(CPP::Tree::Expr::Literal::kind_)>::Max(),\
-			literal, suffixStr);\
-		return literalEntityId;\
-	}(text, suffix)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_PACK_EXPANSION(
+    System* system,
+    ECS2::Entity::Id patternEntityId) {
+    ECS2::Entity::Id packExpansionEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(packExpansionEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::PackExpansion>(
+        packExpansionEntityId, patternEntityId);
+    return packExpansionEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_MEMBER_PTR_EXPR(type, member)\
-	[this](ECS2::Entity::Id typeEntityId, const std::string& memberName){\
-		ECS2::Entity::Id memberPtrExprEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Expr::Tag>(memberPtrExprEntityId);\
-		CreateComponent<CPP::Tree::Expr::MemberPtrExpr>(memberPtrExprEntityId, typeEntityId, memberName);\
-		return memberPtrExprEntityId;\
-	}(type, member)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_MACRO_INVOCATION(
+    System* system,
+    const std::string& macroName,
+    std::vector<ECS2::Entity::Id> arguments,
+    ECS2::Entity::Id macroEntityId) {
+    ECS2::Entity::Id macroInvocationEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(macroInvocationEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::MacroInvocation>(
+        macroInvocationEntityId, macroName, arguments, macroEntityId);
+    return macroInvocationEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_IDENTIFIER_EXPR(identifier)\
-	[this](const std::string& identifierName){\
-		ECS2::Entity::Id identifierExprEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Expr::Tag>(identifierExprEntityId);\
-		CreateComponent<CPP::Tree::Expr::Identifier>(identifierExprEntityId, identifierName);\
-		return identifierExprEntityId;\
-	}(identifier)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_LITERAL_EXPR(
+    System* system,
+    const std::string& literal,
+    const std::string& suffixStr) {
+    ECS2::Entity::Id literalEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(literalEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::Literal>(
+        literalEntityId,
+        Common::Limits<decltype(CPP::Tree::Expr::Literal::kind_)>::Max(),
+        literal,
+        suffixStr);
+    return literalEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_UNARY_OPERATION(operation, operand)\
-	[this](CPP::Tree::Expr::UnaryOpType operationType, ECS2::Entity::Id operantEntityId){\
-		ECS2::Entity::Id unaryOpExprEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Expr::Tag>(unaryOpExprEntityId);\
-		CreateComponent<CPP::Tree::Expr::UnaryOp>(unaryOpExprEntityId,operationType,operantEntityId);\
-		return unaryOpExprEntityId;\
-	}(operation, operand)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_MEMBER_PTR_EXPR(
+    System* system,
+    ECS2::Entity::Id typeEntityId,
+    const std::string& memberName) {
+    ECS2::Entity::Id memberPtrExprEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(memberPtrExprEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::MemberPtrExpr>(
+        memberPtrExprEntityId, typeEntityId, memberName);
+    return memberPtrExprEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_BINARY_OPERATION(operation, left, right)\
-	[this](CPP::Tree::Expr::BinaryOpType operationType, ECS2::Entity::Id leftEntityId,ECS2::Entity::Id rightEntityId){\
-		ECS2::Entity::Id binaryOpExprEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Expr::Tag>(binaryOpExprEntityId);\
-		CreateComponent<CPP::Tree::Expr::BinaryOp>(binaryOpExprEntityId, operationType, leftEntityId, rightEntityId);\
-		return binaryOpExprEntityId;\
-	}(operation, left, right)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_IDENTIFIER_EXPR(
+    System* system,
+    const std::string& identifierName) {
+    ECS2::Entity::Id identifierExprEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(identifierExprEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::Identifier>(
+        identifierExprEntityId, identifierName);
+    return identifierExprEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_LAMBDA_COMPONENTS(lambda, captureTypeEnum, lambdaCaptures, parameters, body)\
-	[this](	ECS2::Entity::Id lambdaEntityId, CPP::Tree::Expr::CaptureType captureType, std::vector<CPP::Tree::Expr::LambdaCapture> captures,\
-			std::vector<ECS2::Entity::Id> parameterEntityIds,\
-			ECS2::Entity::Id bodyEntityId){\
-			CreateComponent<CPP::Tree::Expr::Tag>(lambdaEntityId);\
-			CreateComponent<CPP::Tree::Expr::Lambda>(lambdaEntityId,\
-				captureType,\
-				captures,\
-				parameterEntityIds,\
-				bodyEntityId);\
-	}(lambda,captureTypeEnum, lambdaCaptures, parameters, body)	
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_UNARY_OPERATION(
+    System* system,
+    CPP::Tree::Expr::UnaryOpType operationType,
+    ECS2::Entity::Id operantEntityId) {
+    ECS2::Entity::Id unaryOpExprEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(unaryOpExprEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::UnaryOp>(
+        unaryOpExprEntityId, operationType, operantEntityId);
+    return unaryOpExprEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_LAMBDA(captureTypeEnum, lambdaCaptures, parameters, body)\
-	[this](CPP::Tree::Expr::CaptureType captureType, std::vector<CPP::Tree::Expr::LambdaCapture> captures,\
-			std::vector<ECS2::Entity::Id> parameterEntityIds,\
-			ECS2::Entity::Id bodyEntityId){\
-		ECS2::Entity::Id lambdaEntityId = CreateEntity();\
-		CPP__TREE__EXPR__CREATE_LAMBDA_COMPONENTS(lambdaEntityId, captureType, captures, parameterEntityIds, bodyEntityId);\
-		return lambdaEntityId;\
-	}(captureTypeEnum, lambdaCaptures, parameters, body)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_BINARY_OPERATION(
+    System* system,
+    CPP::Tree::Expr::BinaryOpType operationType,
+    ECS2::Entity::Id leftEntityId,
+    ECS2::Entity::Id rightEntityId) {
+    ECS2::Entity::Id binaryOpExprEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(binaryOpExprEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::BinaryOp>(
+        binaryOpExprEntityId, operationType, leftEntityId, rightEntityId);
+    return binaryOpExprEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_MEMBER_ACCESS_EXPR_COMPONENTS(expr, object, member, arrow)\
-		[this](ECS2::Entity::Id exprEntityId, ECS2::Entity::Id objectEntityId, const std::string& memberName, bool isArrow){\
-		CreateComponent<CPP::Tree::Expr::Tag>(exprEntityId);\
-		CreateComponent<CPP::Tree::Expr::MemberAccess>(exprEntityId, objectEntityId, memberName, isArrow);\
-	}(expr, object, member, arrow)
+template<class System>
+void CPP__TREE__EXPR__CREATE_LAMBDA_COMPONENTS(
+    System* system,
+    ECS2::Entity::Id lambdaEntityId,
+    CPP::Tree::Expr::CaptureType captureType,
+    std::vector<CPP::Tree::Expr::LambdaCapture> captures,
+    std::vector<ECS2::Entity::Id> parameterEntityIds,
+    ECS2::Entity::Id bodyEntityId) {
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(lambdaEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::Lambda>(
+        lambdaEntityId,
+        captureType,
+        captures,
+        parameterEntityIds,
+        bodyEntityId);
+}
 
-#define CPP__TREE__EXPR__CREATE_MEMBER_ACCESS_EXPR(object, member, arrow)\
-		[this](ECS2::Entity::Id objectEntityId, const std::string& memberName, bool isArrow){\
-		ECS2::Entity::Id exprEntityId = CreateEntity();\
-		CPP__TREE__EXPR__CREATE_MEMBER_ACCESS_EXPR_COMPONENTS(exprEntityId, objectEntityId, memberName, isArrow);\
-		return exprEntityId;\
-	}(object, member, arrow)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_LAMBDA(
+    System* system,
+    CPP::Tree::Expr::CaptureType captureType,
+    std::vector<CPP::Tree::Expr::LambdaCapture> captures,
+    std::vector<ECS2::Entity::Id> parameterEntityIds,
+    ECS2::Entity::Id bodyEntityId) {
+    ECS2::Entity::Id lambdaEntityId = system->CreateEntity();
+    CPP__TREE__EXPR__CREATE_LAMBDA_COMPONENTS(
+        system, lambdaEntityId, captureType, captures, parameterEntityIds, bodyEntityId);
+    return lambdaEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_CALL_EXPR_COMPONENTS(callExpr, callee, templateArgs, args)\
-	[this](\
-		ECS2::Entity::Id callExprEntityId,\
-		ECS2::Entity::Id calleeEntityId,\
-		std::vector<ECS2::Entity::Id> templateArgumentEntityIds,\
-		std::vector<ECS2::Entity::Id> argumentEntityIds){\
-	CreateComponent<CPP::Tree::Expr::Tag>(callExprEntityId);\
-	CreateComponent<CPP::Tree::Expr::CallExpr>(callExprEntityId,\
-		calleeEntityId,\
-		templateArgumentEntityIds,\
-		argumentEntityIds);\
-	}(callExpr, callee, templateArgs, args)
+template<class System>
+void CPP__TREE__EXPR__CREATE_MEMBER_ACCESS_EXPR_COMPONENTS(
+    System* system,
+    ECS2::Entity::Id exprEntityId,
+    ECS2::Entity::Id objectEntityId,
+    const std::string& memberName,
+    bool isArrow) {
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(exprEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::MemberAccess>(
+        exprEntityId, objectEntityId, memberName, isArrow);
+}
 
-#define CPP__TREE__EXPR__CREATE_CALL_EXPR(callee, templateArgs, args)\
-	[this](ECS2::Entity::Id calleeEntityId,\
-		std::vector<ECS2::Entity::Id> templateArgumentEntityIds,\
-		std::vector<ECS2::Entity::Id> argumentEntityIds){\
-		ECS2::Entity::Id callExprEntityId = CreateEntity();\
-		CPP__TREE__EXPR__CREATE_CALL_EXPR_COMPONENTS(\
-			callExprEntityId,\
-			calleeEntityId,\
-			templateArgumentEntityIds, argumentEntityIds);\
-		return callExprEntityId;\
-	}(callee, templateArgs, args)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_MEMBER_ACCESS_EXPR(
+    System* system,
+    ECS2::Entity::Id objectEntityId,
+    const std::string& memberName,
+    bool isArrow) {
+    ECS2::Entity::Id exprEntityId = system->CreateEntity();
+    CPP__TREE__EXPR__CREATE_MEMBER_ACCESS_EXPR_COMPONENTS(
+        system, exprEntityId, objectEntityId, memberName, isArrow);
+    return exprEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_CALL_EXPR_NO_ARGS(callee)\
-	[this](ECS2::Entity::Id calleeEntityId){\
-		ECS2::Entity::Id callExprEntityId = CreateEntity();\
-		CPP__TREE__EXPR__CREATE_CALL_EXPR_COMPONENTS(\
-			callExprEntityId,\
-			calleeEntityId,\
-			std::vector<ECS2::Entity::Id>{}, std::vector<ECS2::Entity::Id>{});\
-		return callExprEntityId;\
-	}(callee)
+template<class System>
+void CPP__TREE__EXPR__CREATE_CALL_EXPR_COMPONENTS(
+    System* system,
+    ECS2::Entity::Id callExprEntityId,
+    ECS2::Entity::Id calleeEntityId,
+    std::vector<ECS2::Entity::Id> templateArgumentEntityIds,
+    std::vector<ECS2::Entity::Id> argumentEntityIds) {
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(callExprEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::CallExpr>(
+        callExprEntityId,
+        calleeEntityId,
+        templateArgumentEntityIds,
+        argumentEntityIds);
+}
 
-#define CPP__TREE__EXPR__CREATE_ARRAY_SUBSCRIPT(array_, index)\
-	[this](ECS2::Entity::Id arrayEntityId, ECS2::Entity::Id indexEntityId){\
-		ECS2::Entity::Id arraySubscriptEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Expr::Tag>(arraySubscriptEntityId);\
-		CreateComponent<CPP::Tree::Expr::ArraySubscript>(arraySubscriptEntityId, arrayEntityId, indexEntityId);\
-		return arraySubscriptEntityId;\
-	}(array_, index)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_CALL_EXPR(
+    System* system,
+    ECS2::Entity::Id calleeEntityId,
+    std::vector<ECS2::Entity::Id> templateArgumentEntityIds,
+    std::vector<ECS2::Entity::Id> argumentEntityIds) {
+    ECS2::Entity::Id callExprEntityId = system->CreateEntity();
+    CPP__TREE__EXPR__CREATE_CALL_EXPR_COMPONENTS(
+        system,
+        callExprEntityId,
+        calleeEntityId,
+        templateArgumentEntityIds,
+        argumentEntityIds);
+    return callExprEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_INIT_LIST(inits)\
-	[this](std::vector<ECS2::Entity::Id> initEntityIds){\
-		ECS2::Entity::Id initListEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Expr::Tag>(initListEntityId);\
-		CreateComponent<CPP::Tree::Expr::InitList>(initListEntityId, initEntityIds);\
-		return initListEntityId;\
-	}(inits)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_CALL_EXPR_NO_ARGS(
+    System* system,
+    ECS2::Entity::Id calleeEntityId) {
+    ECS2::Entity::Id callExprEntityId = system->CreateEntity();
+    CPP__TREE__EXPR__CREATE_CALL_EXPR_COMPONENTS(
+        system, callExprEntityId, calleeEntityId, {}, {});
+    return callExprEntityId;
+}
 
-/*						FUNCTION					*/
-#define CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(function, returnValue, templateParams, name, templateExplicitParams, parent, childs)\
-	[this](\
-		ECS2::Entity::Id functionEntityId,\
-		ECS2::Entity::Id returnValueEntityId,\
-		std::vector<ECS2::Entity::Id> templateParameters,\
-		const std::string& funcName,\
-		std::vector<ECS2::Entity::Id> templateExplicitParameters,\
-		ECS2::Entity::Id parentEntityId,\
-		std::vector<ECS2::Entity::Id> childEntityIds){\
-			CreateComponent<CPP::Tree::Node::Tag>(functionEntityId);\
-			CreateComponent<CPP::Tree::Decl::Tag>(functionEntityId);\
-			CreateComponent<CPP::Tree::Decl::Function>(functionEntityId, returnValueEntityId);\
-			CreateComponent<CPP::Tree::Node::Name>(functionEntityId, funcName);\
-			if(!templateParameters.empty()){\
-				CreateComponent<CPP::Tree::Decl::TemplateDecl>(functionEntityId, templateParameters);\
-			}\
-			if(!templateExplicitParameters.empty()){\
-				CreateComponent<CPP::Tree::Decl::ExplicitTemplateArgs>(functionEntityId, templateExplicitParameters);\
-			}\
-			if(parentEntityId.IsValid()){\
-				CreateComponent<CPP::Tree::Node::ParentEntityId>(functionEntityId, parentEntityId); \
-			}\
-			CreateComponent<CPP::Tree::Node::ChildEntityIds>(functionEntityId, childEntityIds);\
-			return functionEntityId;\
-		}(function, returnValue, templateParams, name,templateExplicitParams, parent, childs)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_ARRAY_SUBSCRIPT(
+    System* system,
+    ECS2::Entity::Id arrayEntityId,
+    ECS2::Entity::Id indexEntityId) {
+    ECS2::Entity::Id arraySubscriptEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(arraySubscriptEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::ArraySubscript>(
+        arraySubscriptEntityId, arrayEntityId, indexEntityId);
+    return arraySubscriptEntityId;
+}
 
-#define CPP__TREE__DECL__CREATE_CONSTRUCTOR(name, initializers, parent, parentDecl, childs)\
-	[this](\
-		const std::string& constructorName,\
-		std::vector<ECS2::Entity::Id> initializerEntityIds,\
-		ECS2::Entity::Id parentEntityId,\
-		ECS2::Entity::Id parentDeclEntityId, \
-		std::vector<ECS2::Entity::Id> childEntityId){\
-		ECS2::Entity::Id constructorEntityId = CreateEntity();\
-		CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(\
-			constructorEntityId,\
-			ECS2::Entity::Id::invalid_,\
-			std::vector<ECS2::Entity::Id>{},\
-			constructorName,\
-			std::vector<ECS2::Entity::Id>{},\
-			parentEntityId,\
-			childEntityId\
-			);\
-		CreateComponent<CPP::Tree::Decl::Constructor>(constructorEntityId, parentDeclEntityId);\
-		if(!initializerEntityIds.empty()) {\
-			CreateComponent<CPP::Tree::ConstructorInitList>(constructorEntityId, initializerEntityIds);\
-		}\
-		return constructorEntityId;\
-		}(name, initializers, parent, parentDecl, childs)
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_INIT_LIST(
+    System* system,
+    std::vector<ECS2::Entity::Id> initEntityIds) {
+    ECS2::Entity::Id initListEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Expr::Tag>(initListEntityId);
+    system->template CreateComponent<CPP::Tree::Expr::InitList>(
+        initListEntityId, initEntityIds);
+    return initListEntityId;
+}
 
-#define CPP__TREE__DECL__CREATE_EMPTY_CONSTRUCTOR(name, parent, parentDecl)\
-	[this](const std::string& constructorName,ECS2::Entity::Id parentEntityId, ECS2::Entity::Id parentDeclEntityId){\
-		ECS2::Entity::Id constructorEntityId = CreateEntity();\
-		CPP__TREE__DECL__CREATE_CONSTRUCTOR(\
-			constructorName,\
-			std::vector<ECS2::Entity::Id>{},\
-			parentEntityId, parentDeclEntityId, std::vector<ECS2::Entity::Id>{CPP__TREE__STMT__CREATE_EMPTY_COMPOUND_STATEMENT()});\
-		return constructorEntityId;\
-		}(name, parent, parentDecl)
+/* ======================== FUNCTIONS ======================== */
 
-#define CPP__TREE__DECL__CREATE_PUBLIC_EMPTY_CONSTRUCTOR(name, parent, parentDecl)\
-	[this](const std::string& constructorName,ECS2::Entity::Id parentEntityId, ECS2::Entity::Id parentDeclEntityId){\
-		ECS2::Entity::Id constructorEntityId = CPP__TREE__DECL__CREATE_CONSTRUCTOR(\
-			constructorName,\
-			std::vector<ECS2::Entity::Id>{},\
-			parentEntityId,parentDeclEntityId, std::vector<ECS2::Entity::Id>{CPP__TREE__STMT__CREATE_EMPTY_COMPOUND_STATEMENT()});\
-		CreateComponent<CPP::Tree::Access::Public_>(constructorEntityId);\
-		return constructorEntityId;\
-		}(name, parent, parentDecl)
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(
+    System* system,
+    ECS2::Entity::Id functionEntityId,
+    ECS2::Entity::Id returnValueEntityId,
+    std::vector<ECS2::Entity::Id> templateParameters,
+    const std::string& funcName,
+    std::vector<ECS2::Entity::Id> templateExplicitParameters,
+    ECS2::Entity::Id parentEntityId,
+    std::vector<ECS2::Entity::Id> childEntityIds) {
+    system->template CreateComponent<CPP::Tree::Node::Tag>(functionEntityId);
+    system->template CreateComponent<CPP::Tree::Decl::Tag>(functionEntityId);
+    system->template CreateComponent<CPP::Tree::Decl::Function>(
+        functionEntityId, returnValueEntityId);
+    system->template CreateComponent<CPP::Tree::Node::Name>(
+        functionEntityId, funcName);
 
+    if (!templateParameters.empty()) {
+        system->template CreateComponent<CPP::Tree::Decl::TemplateDecl>(
+            functionEntityId, templateParameters);
+    }
+    if (!templateExplicitParameters.empty()) {
+        system->template CreateComponent<CPP::Tree::Decl::ExplicitTemplateArgs>(
+            functionEntityId, templateExplicitParameters);
+    }
+    if (parentEntityId.IsValid()) {
+        system->template CreateComponent<CPP::Tree::Node::ParentEntityId>(
+            functionEntityId, parentEntityId);
+    }
+    system->template CreateComponent<CPP::Tree::Node::ChildEntityIds>(
+        functionEntityId, childEntityIds);
+    return functionEntityId;
+}
 
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_CONSTRUCTOR(
+    System* system,
+    const std::string& constructorName,
+    std::vector<ECS2::Entity::Id> initializerEntityIds,
+    ECS2::Entity::Id parentEntityId,
+    ECS2::Entity::Id parentDeclEntityId,
+    std::vector<ECS2::Entity::Id> childEntityId) {
+    ECS2::Entity::Id constructorEntityId = system->CreateEntity();
+    CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(
+        system,
+        constructorEntityId,
+        ECS2::Entity::Id::invalid_,
+        {},
+        constructorName,
+        {},
+        parentEntityId,
+        childEntityId);
 
-#define CPP__TREE__CREATE_CONSTRUCTOR_INITIALIZER(member, expr)\
-	[this](ECS2::Entity::Id memberEntityId, ECS2::Entity::Id exprEntityId){\
-		ECS2::Entity::Id initializer = CreateEntity();\
-		CreateComponent<CPP::Tree::ConstructorInitializer>(initializer,\
-			memberEntityId,\
-			exprEntityId \
-		);\
-		return initializer;\
-	}(member, expr)
+    system->template CreateComponent<CPP::Tree::Decl::Constructor>(
+        constructorEntityId, parentDeclEntityId);
 
-#define CPP__TREE__DECL__CREATE_FUNCTION(returnValue, name, parent, childs)\
-	[this](ECS2::Entity::Id returnValueEntityId,\
-		const std::string& funcName,\
-		ECS2::Entity::Id parentEntityId,\
-		std::vector<ECS2::Entity::Id> childEntityIds){\
-		ECS2::Entity::Id functionEntityId = CreateEntity();\
-		CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(\
-			functionEntityId,\
-			returnValueEntityId,\
-			std::vector<ECS2::Entity::Id>{},\
-			funcName,\
-			std::vector<ECS2::Entity::Id>{},\
-			parentEntityId,\
-			childEntityIds\
-			);\
-		return functionEntityId;\
-		}(returnValue, name, parent, childs)
+    if (!initializerEntityIds.empty()) {
+        system->template CreateComponent<CPP::Tree::ConstructorInitList>(
+            constructorEntityId, initializerEntityIds);
+    }
+    return constructorEntityId;
+}
 
-#define CPP__TREE__DECL__CREATE_TEMPLATE_FUNCTION(returnValue, templateParams, name, templateExplicitParams, parent, childs)\
-	[this](ECS2::Entity::Id returnValueEntityId,\
-		std::vector<ECS2::Entity::Id> templateParams,\
-		const std::string& funcName,\
-		std::vector<ECS2::Entity::Id> templateExplicitParameters,\
-		ECS2::Entity::Id parentEntityId,\
-		std::vector<ECS2::Entity::Id> childEntityIds){\
-		ECS2::Entity::Id functionEntityId = CreateEntity();\
-		CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(\
-			functionEntityId,\
-			returnValueEntityId,\
-			templateParams,\
-			funcName,\
-			templateExplicitParameters,\
-			parentEntityId,\
-			childEntityIds\
-			);\
-		return functionEntityId;\
-		}(returnValue, name, templateExplicitParams, parent, childs)
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_EMPTY_CONSTRUCTOR(
+    System* system,
+    const std::string& constructorName,
+    ECS2::Entity::Id parentEntityId,
+    ECS2::Entity::Id parentDeclEntityId) {
+    return CPP__TREE__DECL__CREATE_CONSTRUCTOR(
+        system,
+        constructorName,
+        {},
+        parentEntityId,
+        parentDeclEntityId,
+        { CPP__TREE__STMT__CREATE_EMPTY_COMPOUND_STATEMENT(system) });
+}
 
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_PUBLIC_EMPTY_CONSTRUCTOR(
+    System* system,
+    const std::string& constructorName,
+    ECS2::Entity::Id parentEntityId,
+    ECS2::Entity::Id parentDeclEntityId) {
+    ECS2::Entity::Id constructorEntityId = CPP__TREE__DECL__CREATE_CONSTRUCTOR(
+        system,
+        constructorName,
+        {},
+        parentEntityId,
+        parentDeclEntityId,
+        { CPP__TREE__STMT__CREATE_EMPTY_COMPOUND_STATEMENT(system) });
 
-#define CPP__TREE__DECL__CREATE_PUBLIC_METHOD(returnValue, name, parent, childs)\
-	[this](ECS2::Entity::Id returnValueEntityId,\
-		const std::string& funcName,\
-		ECS2::Entity::Id parentEntityId,\
-		std::vector<ECS2::Entity::Id> childEntityIds){\
-		ECS2::Entity::Id functionEntityId = CPP__TREE__DECL__CREATE_FUNCTION(\
-			returnValueEntityId,\
-			funcName,\
-			parentEntityId,\
-			childEntityIds);\
-		CreateComponent<CPP::Tree::Access::Public_>(functionEntityId);\
-		return functionEntityId;\
-		}(returnValue, name, parent, childs)
+    system->template CreateComponent<CPP::Tree::Access::Public_>(constructorEntityId);
+    return constructorEntityId;
+}
 
-#define CPP__TREE__DECL__CREATE_PUBLIC_STATIC_METHOD(returnValue, name, parent, childs)\
-	[this](ECS2::Entity::Id returnValueEntityId,\
-		const std::string& funcName,\
-		ECS2::Entity::Id parentEntityId,\
-		std::vector<ECS2::Entity::Id> childEntityIds){\
-		ECS2::Entity::Id functionEntityId = CPP__TREE__DECL__CREATE_PUBLIC_METHOD(\
-			returnValueEntityId, \
-			funcName, \
-			parentEntityId, \
-			childEntityIds);\
-		CreateComponent<CPP::Tree::StorageClass::Static_>(functionEntityId);\
-		return functionEntityId;\
-		}(returnValue, name, parent, childs)
+template<class System>
+ECS2::Entity::Id CPP__TREE__CREATE_CONSTRUCTOR_INITIALIZER(
+    System* system,
+    ECS2::Entity::Id memberEntityId,
+    ECS2::Entity::Id exprEntityId) {
+    ECS2::Entity::Id initializer = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::ConstructorInitializer>(
+        initializer, memberEntityId, exprEntityId);
+    return initializer;
+}
 
-#define CPP__TREE__DECL__CREATE_PUBLIC_STATIC_INLINE_METHOD(returnValue, name, parent, childs)\
-	[this](ECS2::Entity::Id returnValueEntityId,\
-		const std::string& funcName,\
-		ECS2::Entity::Id parentEntityId,\
-		std::vector<ECS2::Entity::Id> childEntityIds){\
-		ECS2::Entity::Id functionEntityId = CPP__TREE__DECL__CREATE_PUBLIC_STATIC_METHOD(\
-			returnValueEntityId, \
-			funcName, \
-			parentEntityId, \
-			childEntityIds);\
-		CreateComponent<CPP::Tree::Inline_>(functionEntityId);\
-		return functionEntityId;\
-		}(returnValue, name, parent, childs)
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_FUNCTION(
+    System* system,
+    ECS2::Entity::Id returnValueEntityId,
+    const std::string& funcName,
+    ECS2::Entity::Id parentEntityId,
+    std::vector<ECS2::Entity::Id> childEntityIds) {
+    ECS2::Entity::Id functionEntityId = system->CreateEntity();
+    CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(
+        system,
+        functionEntityId,
+        returnValueEntityId,
+        {},
+        funcName,
+        {},
+        parentEntityId,
+        childEntityIds);
+    return functionEntityId;
+}
 
-#define CPP__TREE__DECL__CREATE_USING_DIRECTIVE(namespaceName)\
-	[this](std::string namespaceNameStr){\
-		ECS2::Entity::Id usingDirectiveEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Decl::Tag>(usingDirectiveEntityId);\
-		CreateComponent<CPP::Tree::Decl::UsingDirective>(usingDirectiveEntityId, namespaceNameStr);\
-		return usingDirectiveEntityId;\
-	}(namespaceName)
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_TEMPLATE_FUNCTION(
+    System* system,
+    ECS2::Entity::Id returnValueEntityId,
+    std::vector<ECS2::Entity::Id> templateParams,
+    const std::string& funcName,
+    std::vector<ECS2::Entity::Id> templateExplicitParameters,
+    ECS2::Entity::Id parentEntityId,
+    std::vector<ECS2::Entity::Id> childEntityIds) {
+    ECS2::Entity::Id functionEntityId = system->CreateEntity();
+    CPP__TREE__DECL__CREATE_FUNCTION_COMPONENTS(
+        system,
+        functionEntityId,
+        returnValueEntityId,
+        templateParams,
+        funcName,
+        templateExplicitParameters,
+        parentEntityId,
+        childEntityIds);
+    return functionEntityId;
+}
 
-/*					TEMPLATE TYPE PARAMETER			*/
-#define CPP__TREE__DECL__CREATE_TEMPLATE_TYPE_PARAMETER(typeName, defaultType, isParameterPack)\
-	[this](const std::string& name, ECS2::Entity::Id defaultTypeEntityId, bool isPack){\
-		ECS2::Entity::Id templateTypeParameterEntityId = CreateEntity();\
-		CreateComponent<CPP::Tree::Decl::Tag>(templateTypeParameterEntityId);\
-		CreateComponent<CPP::Tree::Decl::TemplateTypeParam>(templateTypeParameterEntityId, name, defaultTypeEntityId, isPack);\
-		return templateTypeParameterEntityId;\
-	}(typeName, defaultType, isParameterPack)
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_PUBLIC_METHOD(
+    System* system,
+    ECS2::Entity::Id returnValueEntityId,
+    const std::string& funcName,
+    ECS2::Entity::Id parentEntityId,
+    std::vector<ECS2::Entity::Id> childEntityIds) {
+    ECS2::Entity::Id functionEntityId = CPP__TREE__DECL__CREATE_FUNCTION(
+        system, returnValueEntityId, funcName, parentEntityId, childEntityIds);
 
-/*					CLASS DECLARATION					*/
-#define CPP__TREE__DECL__CREATE_CLASS_COMPONENTS(classId, name, parent, childs)\
-	[this](ECS2::Entity::Id classEntityId, const std::string& className, ECS2::Entity::Id parentEntityId, std::vector<ECS2::Entity::Id> childEntityIds) {\
-		CreateComponent<CPP::Tree::Node::Tag>(classEntityId);\
-		CreateComponent<CPP::Tree::Decl::Tag>(classEntityId);\
-		CreateComponent<CPP::Tree::Decl::Class_>(classEntityId);\
-		CreateComponent<CPP::Tree::Node::Name>(classEntityId, className);\
-		if(parentEntityId.IsValid()){\
-			CreateComponent<CPP::Tree::Node::ParentEntityId>(classEntityId, parentEntityId); \
-		}\
-		if(!childEntityIds.empty()){\
-			CreateComponent<CPP::Tree::Node::ChildEntityIds>(classEntityId, childEntityIds); \
-		}\
-	}(classId, name, parent, childs)
+    system->template CreateComponent<CPP::Tree::Access::Public_>(functionEntityId);
+    return functionEntityId;
+}
 
-#define CPP__TREE__DECL__CREATE_CLASS(name)\
-	[this](const std::string& className){\
-	}(name)
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_PUBLIC_STATIC_METHOD(
+    System* system,
+    ECS2::Entity::Id returnValueEntityId,
+    const std::string& funcName,
+    ECS2::Entity::Id parentEntityId,
+    std::vector<ECS2::Entity::Id> childEntityIds) {
+    ECS2::Entity::Id functionEntityId = CPP__TREE__DECL__CREATE_PUBLIC_METHOD(
+        system, returnValueEntityId, funcName, parentEntityId, childEntityIds);
 
+    system->template CreateComponent<CPP::Tree::StorageClass::Static_>(functionEntityId);
+    return functionEntityId;
+}
 
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_PUBLIC_STATIC_INLINE_METHOD(
+    System* system,
+    ECS2::Entity::Id returnValueEntityId,
+    const std::string& funcName,
+    ECS2::Entity::Id parentEntityId,
+    std::vector<ECS2::Entity::Id> childEntityIds) {
+    ECS2::Entity::Id functionEntityId = CPP__TREE__DECL__CREATE_PUBLIC_STATIC_METHOD(
+        system, returnValueEntityId, funcName, parentEntityId, childEntityIds);
 
-/*Help*/
+    system->template CreateComponent<CPP::Tree::Inline_>(functionEntityId);
+    return functionEntityId;
+}
 
-#define CPP__TREE__EXPR__CREATE_CALL_EXPR_NO_PARAMETERS(identifire)\
-CPP__TREE__EXPR__CREATE_CALL_EXPR(\
-	CPP__TREE__EXPR__CREATE_IDENTIFIER_EXPR(identifire),\
-	CPP__TREE__CREATE_ENTITIES_VECTOR(),\
-	CPP__TREE__CREATE_ENTITIES_VECTOR()\
-)
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_USING_DIRECTIVE(
+    System* system,
+    std::string namespaceNameStr) {
+    ECS2::Entity::Id usingDirectiveEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Decl::Tag>(usingDirectiveEntityId);
+    system->template CreateComponent<CPP::Tree::Decl::UsingDirective>(
+        usingDirectiveEntityId, namespaceNameStr);
+    return usingDirectiveEntityId;
+}
+
+/* ======================== TEMPLATE TYPE PARAMETER ======================== */
+
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_TEMPLATE_TYPE_PARAMETER(
+    System* system,
+    const std::string& name,
+    ECS2::Entity::Id defaultTypeEntityId,
+    bool isPack) {
+    ECS2::Entity::Id templateTypeParameterEntityId = system->CreateEntity();
+    system->template CreateComponent<CPP::Tree::Decl::Tag>(templateTypeParameterEntityId);
+    system->template CreateComponent<CPP::Tree::Decl::TemplateTypeParam>(
+        templateTypeParameterEntityId, name, defaultTypeEntityId, isPack);
+    return templateTypeParameterEntityId;
+}
+
+/* ======================== CLASS DECLARATION ======================== */
+
+template<class System>
+void CPP__TREE__DECL__CREATE_CLASS_COMPONENTS(
+    System* system,
+    ECS2::Entity::Id classEntityId,
+    const std::string& className,
+    ECS2::Entity::Id parentEntityId,
+    std::vector<ECS2::Entity::Id> childEntityIds) {
+    system->template CreateComponent<CPP::Tree::Node::Tag>(classEntityId);
+    system->template CreateComponent<CPP::Tree::Decl::Tag>(classEntityId);
+    system->template CreateComponent<CPP::Tree::Decl::Class_>(classEntityId);
+    system->template CreateComponent<CPP::Tree::Node::Name>(classEntityId, className);
+
+    if (parentEntityId.IsValid()) {
+        system->template CreateComponent<CPP::Tree::Node::ParentEntityId>(
+            classEntityId, parentEntityId);
+    }
+    if (!childEntityIds.empty()) {
+        system->template CreateComponent<CPP::Tree::Node::ChildEntityIds>(
+            classEntityId, childEntityIds);
+    }
+}
+
+template<class System>
+ECS2::Entity::Id CPP__TREE__DECL__CREATE_CLASS(
+    System* system,
+    const std::string& className) {
+    ECS2::Entity::Id classEntityId = system->CreateEntity();
+    CPP__TREE__DECL__CREATE_CLASS_COMPONENTS(
+        system, classEntityId, className, ECS2::Entity::Id::invalid_, {});
+    return classEntityId;
+}
+
+/* ======================== HELPERS ======================== */
+
+template<class System>
+ECS2::Entity::Id CPP__TREE__EXPR__CREATE_CALL_EXPR_NO_PARAMETERS(
+    System* system,
+    const std::string& identifier) {
+    return CPP__TREE__EXPR__CREATE_CALL_EXPR(
+        system,
+        CPP__TREE__EXPR__CREATE_IDENTIFIER_EXPR(system, identifier),
+        {},
+        {});
+}
+
+template<class System>
+std::vector<ECS2::Entity::Id> CPP__TREE__TYPE__CREATE_NAMED_TYPE_ENTITIES_VECTOR(
+    System* system,
+    const std::vector<std::string>& names) {
+    std::vector<ECS2::Entity::Id> typeEntityIds;
+    for (const std::string& name : names) {
+        typeEntityIds.push_back(CPP__TREE__TYPE__CREATE_NAMED_TYPE(system, name));
+    }
+    return typeEntityIds;
+}

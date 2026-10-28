@@ -116,7 +116,7 @@ CPPNamespace = {
             },
             -- Имя (для именованных узлов: переменные, функции, классы...)
             NameComponent = {
-                serializable = false,
+                serializable = true,
                 bindable = false,
                 fields = {
                     { type = "std::string", name = "name" }
@@ -881,6 +881,12 @@ CPPNamespace = {
                     },
                     {
                         archetype = "ECS::File::Table::System::System"
+                    },
+                    {
+                        archetype = "ECS::File::Table::System::CallOrder::CallOrder"
+                    },
+                    {
+                        archetype = "ECS::File::Table::System::UpdateMethod::UpdateMethod"
                     },
                     {
                         accessingComponents = {

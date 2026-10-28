@@ -207,6 +207,8 @@ target_sources(ecs_generator3
     PRIVATE
 )
 
+
+include(auto_IncludeDirectories.cmake)
 target_include_directories(ecs_generator3
     PUBLIC
     ${CMAKE_CURRENT_LIST_DIR})
@@ -222,15 +224,28 @@ target_link_libraries(ecs_generator3
     ${GRAPHVIZ_LIBRARIES}
     ${CLANG_LIBS}
     ${LLVM_LIBS}
-    LuaLayer
-    # Resources
-    # Config
-    UI
-    ECS2
-    ImGui
 )
 
 target_include_directories(ecs_generator3 PUBLIC ${CMAKE_CURRENT_LIST_DIR})
+
+#lib3dpart
+find_package(glfw3 CONFIG REQUIRED)
+target_link_libraries(ecs_generator3 PRIVATE glfw)
+find_package(Lua REQUIRED)
+target_include_directories(ecs_generator3 PUBLIC ${LUA_INCLUDE_DIR})
+target_link_libraries(ecs_generator3 PRIVATE ${LUA_LIBRARIES})
+find_package(magic_enum CONFIG REQUIRED)
+
+find_package(winpixevent CONFIG REQUIRED)
+target_link_libraries(ecs_generator3 PUBLIC 
+Microsoft::WinPixEventRuntime
+magic_enum::magic_enum)
+
+find_package(fmt CONFIG REQUIRED)
+target_link_libraries(ecs_generator3 PRIVATE 
+    fmt::fmt         # Явно указываем fmt, так как spdlog зависит от него
+)
+
 
 message("ZLIB_FOUND: ${ZLIB_FOUND}")
 message("ZLIB_INCLUDE_DIRS: ${ZLIB_INCLUDE_DIRS}")

@@ -1,6 +1,6 @@
 
-#include <auto_ecs_generator3.RunSystems.hpp>
-#include <CPPTemplates/Project.hpp>
+#include <auto_OksEngine.RunSystems.hpp>
+#include <Engine.hpp>
 
 #include <Common/CommandLineParameters/auto_OksEngine.CommandLineParameters.hpp>
 #include <ECS/File/auto_OksEngine.ECS.File.hpp>

@@ -53,9 +53,9 @@ ECS = {
     --if type has Entry need to include Header
     Includes = {
         { Entries = { "Common::Handle" },         Headers = { "Common/Handle.hpp" }},
-        { Entries = { "::Lua::Context" },         Headers = { "Lua/Lua.Context.hpp" }},
+        { Entries = { "::Lua::Context" },         Headers = { "Common/Lua/Lua.Context.hpp" }},
         { Entries = { "std::string" },            Headers = { "string" } },
-        { Entries = { "Common" },                 Headers = { "Common.hpp" } },
+        { Entries = { "Common" },                 Headers = { "Common/Common.hpp" } },
         { Entries = { "std::chrono" },            Headers = { "chrono" } },
         { Entries = { "PAL" },                    Headers = { "PAL.hpp" } },
         { Entries = { "glm" },                    Headers = { "glm/glm.hpp" } },
@@ -64,8 +64,8 @@ ECS = {
         { Entries = { "RAL" },                    Headers = { "RAL.hpp" } },
         { Entries = { "Geom:" },                  Headers = { "Geometry.hpp" } },
         { Entries = { "std::map" },               Headers = { "map" } },
-        { Entries = { "UIAL::Window" },           Headers = { "UI/UIAL.Window.hpp" } },
-        { Entries = { "UI_::Window" },            Headers = { "UI/UI.Window.hpp" } },
+        { Entries = { "UIAL::Window" },           Headers = { "Common/UI/UIAL.Window.hpp" } },
+        { Entries = { "UI_::Window" },            Headers = { "Common/UI/UI.Window.hpp" } },
         { Entries = { "sf" },                     Headers = { "SFML/Audio.hpp" } },
         { Entries = { "glm::quat" },              Headers = { "glm/gtc/quaternion.hpp" } },
         { Entries = { "std::future" },            Headers = { "future" } },

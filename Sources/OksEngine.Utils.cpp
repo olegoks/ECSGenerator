@@ -2,7 +2,10 @@
 
 //#include <auto_OksEngine.Utils.hpp>
 
+#include<auto_OksEngine.ECS.Component.Utils.hpp>
+
 namespace OksEngine {
+
 
 	void EditEntity(std::shared_ptr<ECS2::World> world_, ECS2::Entity::Id entity1id) {
 		//const std::string idString = std::to_string(entity1id);

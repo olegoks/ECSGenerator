@@ -2,8 +2,8 @@
 
 #include <algorithm>
 
-#include <OS.Memory.Common.hpp>
-#include <OS.Memory.AllocationCallbacks.hpp>
+#include <Common/OS/OS.Memory.Common.hpp>
+#include <Common/OS/OS.Memory.AllocationCallbacks.hpp>
 
 #include <shared_mutex>
 //#include <boost/thread.hpp>

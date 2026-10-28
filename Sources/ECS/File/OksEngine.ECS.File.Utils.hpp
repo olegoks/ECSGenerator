@@ -573,6 +573,28 @@ namespace ECS::File::Table {
 		return readComponents;
 	}
 
+	template<class System>
+	std::vector<ECS2::Entity::Id> GET_TABLE_PARENTS(System* system, ECS2::Entity::Id tableEntityId) {
+		ASSERT(system->IsComponentExist<File::Table::Tag>(tableEntityId));
+		if (!system->template IsComponentExist<File::Table::ParentTableEntityId>(tableEntityId)) {
+			return {};
+		}
+		else {
+			ECS2::Entity::Id parentTableEntityId = system->template GetComponent<File::Table::ParentTableEntityId>(tableEntityId)->id_;
+			std::vector<ECS2::Entity::Id> parentTables;
+			std::function<void(ECS2::Entity::Id)> processParent =
+				[system, &parentTables, &processParent]
+				(ECS2::Entity::Id parentTableEntityId) {
+				if (system->template IsComponentExist<File::Table::ParentTableEntityId>(parentTableEntityId)) {
+					processParent(system->template GetComponent<File::Table::ParentTableEntityId>(parentTableEntityId)->id_);
+				}
+				parentTables.push_back(parentTableEntityId);
+				};
+			processParent(parentTableEntityId);
+			return parentTables;
+		}
+	}
+
 	//template<class System>
 	//::std::vector<ECS2::Entity::Id> ECS__FILE__TABLE__SYSTEM__GET_ARCHETYPES_USED(System* system, ECS2::Entity::Id systemEntityId) {
 	//	ASSERT(system->template IsComponentExist<ECS::File::Table::System::Tag>(systemEntityId));

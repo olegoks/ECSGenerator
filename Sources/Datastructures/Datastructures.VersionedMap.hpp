@@ -6,12 +6,12 @@
 #include <functional>
 #include <compare>
 
-#include <Common.Identifier.hpp>
-#include <Common.Types.hpp>
-#include <OS.Memory.Common.hpp>
+#include <Common/Common.Identifier.hpp>
+#include <Common/Common.Types.hpp>
+#include <Common/OS/OS.Memory.Common.hpp>
 #include <Datastructures.Vector.hpp>
-#include <OS.Memory.AllocationCallbacks.hpp>
-#include <OS.Assert.hpp>
+#include <Common/OS/OS.Memory.AllocationCallbacks.hpp>
+#include <Common/OS/OS.Assert.hpp>
 
 namespace DataStructures {
 

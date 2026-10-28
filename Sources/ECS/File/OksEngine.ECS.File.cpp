@@ -564,7 +564,7 @@ namespace ECS::File {
 									luabridge::LuaRef system,
 									const std::string& systemName) {
 
-										ECS2::Entity::Id systemEntityId = CreateEntity<ECS__FILE__TABLE__SYSTEM__SYSTEM>();
+										ECS2::Entity::Id systemEntityId = this->CreateEntity<ECS__FILE__TABLE__SYSTEM__SYSTEM>();
 
 										CreateComponent<Table::Tag>(systemEntityId);
 										CreateComponent<Table::System::Tag>(systemEntityId);
