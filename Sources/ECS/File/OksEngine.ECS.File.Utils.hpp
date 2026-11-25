@@ -202,35 +202,9 @@ namespace ECS::File::Table {
         CreateComponent<Constant::Value>(constantEntityId, value.cast<::std::string>().value());\
         return  constantEntityId;       \
     }(luaRef, name);        
-	//
-	//#define ECS__FILE__TABLE__GET_NAMESPACE_ENTITY_IDS(entityId)\
-	//    [this](ECS2::Entity::Id tableEntityId){\
-	//		ASSERT(tableEntityId.IsValid());\
-	//        ::std::vector<ECS2::Entity::Id> namespaces; \
-	//        ::std::function<void(ECS2::Entity::Id)> processParent = \
-	//        [this, \
-	//        &namespaces, \
-	//        &processParent](ECS2::Entity::Id parentEntityId) {\
-	//            ECS2::ComponentsFilter parentTableCF = GetComponentsFilter(parentEntityId); \
-	//            ASSERT(IsComponentExist<File::Table::Tag>(parentEntityId)); \
-	//            ASSERT(IsComponentExist<File::Table::Namespace::Tag>(parentEntityId)); \
-	//            ASSERT(IsComponentExist<File::Table::Name>(parentEntityId)); \
-	//            ASSERT(IsComponentExist<File::Table::ChildTablesEntityIds>(parentEntityId)); \
-	//            if (IsComponentExist<File::Table::ParentTableEntityId>(parentEntityId)) {\
-	//                   processParent(GetComponent<File::Table::ParentTableEntityId>(parentEntityId)->id_); \
-	//            }\
-	//            namespaces.push_back(parentEntityId);\
-	//        }; \
-	//		if(IsComponentExist<File::Table::ParentTableEntityId>(tableEntityId)){\
-	//			ECS2::Entity::Id parentTableEntityId = GetComponent<File::Table::ParentTableEntityId>(tableEntityId)->id_; \
-	//			processParent(parentTableEntityId); \
-	//		}\
-	//        return namespaces;\
-	//    }(entityId)
-
 
 	template<class System>
-	::std::vector<ECS2::Entity::Id> ECS__FILE__TABLE__GET_NAMESPACE_ENTITY_IDS(System* system, ECS2::Entity::Id tableEntityId) {
+	::std::vector<ECS2::Entity::Id> GetNamespaceEntityIds(System* system, ECS2::Entity::Id tableEntityId) {
 		ASSERT(tableEntityId.IsValid());
 		::std::vector<ECS2::Entity::Id> namespaces;
 		::std::function<void(ECS2::Entity::Id)> processParent =
@@ -255,8 +229,8 @@ namespace ECS::File::Table {
 	}
 
 	template<class System>
-	::std::vector<::std::string> ECS__FILE__TABLE__GET_SPLITED_NAMESPACE_NAMES(System* system, ECS2::Entity::Id tableEntityId) {
-		::std::vector<ECS2::Entity::Id> namespaces = ECS__FILE__TABLE__GET_NAMESPACE_ENTITY_IDS(system, tableEntityId);
+	::std::vector<::std::string> GetSplitedNamespaceNames(System* system, ECS2::Entity::Id tableEntityId) {
+		::std::vector<ECS2::Entity::Id> namespaces = GetNamespaceEntityIds(system, tableEntityId);
 		::std::vector<::std::string> namespaceNames;
 		for (ECS2::Entity::Id namespaceEntityId : namespaces) {
 			namespaceNames.push_back(system->template GetComponent<ECS::File::Table::Name>(namespaceEntityId)->name_);
@@ -265,8 +239,8 @@ namespace ECS::File::Table {
 	}
 
 	template<class System>
-	::std::string ECS__FILE__TABLE__GET_SPLITED_FULL_NAME(System* system, ECS2::Entity::Id tableEntityId) {
-		::std::vector<::std::string> tableNames = File::Table::ECS__FILE__TABLE__GET_SPLITED_NAMESPACE_NAMES(system, tableEntityId);
+	::std::string GetSplitedFullName(System* system, ECS2::Entity::Id tableEntityId) {
+		::std::vector<::std::string> tableNames = File::Table::GetSplitedNamespaceNames(system, tableEntityId);
 		tableNames.push_back(system->template GetComponent<ECS::File::Table::Name>(tableEntityId)->name_);
 		return tableNames;
 	}
@@ -292,9 +266,9 @@ namespace ECS::File::Table {
 	//			}(entityId,delimiterString,isNamespaceUppercase)
 
 	template<class System>
-	::std::string ECS__FILE__TABLE__GET_FULL_NAMESPACE_STRING(System* system, ECS2::Entity::Id tableEntityId, const char* delimiter, bool isUppercase) {
+	::std::string GetFullNamespaceString(System* system, ECS2::Entity::Id tableEntityId, const char* delimiter, bool isUppercase) {
 		ECS2::ComponentsFilter beginTableCF = system->GetComponentsFilter(tableEntityId);
-		::std::vector<::std::string> namespaceStrings = File::Table::ECS__FILE__TABLE__GET_SPLITED_NAMESPACE_NAMES(system, tableEntityId);
+		::std::vector<::std::string> namespaceStrings = File::Table::GetSplitedNamespaceNames(system, tableEntityId);
 		::std::string resultNamespace;
 		for (Common::Index i = 0; i < namespaceStrings.size(); i++) {
 			::std::string& string = namespaceStrings[i];
@@ -324,7 +298,7 @@ namespace ECS::File::Table {
 	//			}(entityId, isNamespaceUppercase)
 
 	template<class System>
-	::std::string ECS__FILE__TABLE__GET_NAME(System* system, ECS2::Entity::Id tableEntityId, bool isUppercase) {
+	::std::string GetName(System* system, ECS2::Entity::Id tableEntityId, bool isUppercase) {
 		ASSERT(system->template IsComponentExist<File::Table::Tag>(tableEntityId));
 		ASSERT(system->template IsComponentExist<File::Table::Name>(tableEntityId));
 		::std::string tableName = system->template GetComponent<File::Table::Name>(tableEntityId)->name_;
@@ -343,9 +317,9 @@ namespace ECS::File::Table {
 	//			}(entityId, delimiterString, isNamespaceUppercase)
 
 	template<class System>
-	::std::string ECS__FILE__TABLE__GET_FULL_NAME(System* system, ECS2::Entity::Id tableEntityId, const char* delimiter, bool isUppercase) {
-		::std::string tableName = ECS__FILE__TABLE__GET_NAME(system, tableEntityId, isUppercase);
-		const ::std::string tableNamespace = ECS__FILE__TABLE__GET_FULL_NAMESPACE_STRING(system, tableEntityId, delimiter, isUppercase);
+	::std::string GetFullName(System* system, ECS2::Entity::Id tableEntityId, const char* delimiter, bool isUppercase) {
+		::std::string tableName = GetName(system, tableEntityId, isUppercase);
+		const ::std::string tableNamespace = GetFullNamespaceString(system, tableEntityId, delimiter, isUppercase);
 		return tableNamespace + delimiter + tableName;
 	}
 
@@ -359,10 +333,10 @@ namespace ECS::File::Table {
 		}()
 
 	template<class System, class TableTag>
-	ECS2::Entity::Id ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME_OR_INVALID_ID(System* system, ECS2::Entity::Id usageTableEntityId, const ::std::string& findingFullTableName) {
+	ECS2::Entity::Id GetTableEntityIdByNameOrInvalidId(System* system, ECS2::Entity::Id usageTableEntityId, const ::std::string& findingFullTableName) {
 		BEGIN_PROFILE("ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME");
 		ASSERT(ECS::File::Table::IsValidName(findingFullTableName));
-		::std::vector<::std::string> systemNamespaceNames = File::Table::ECS__FILE__TABLE__GET_SPLITED_NAMESPACE_NAMES(system, usageTableEntityId);
+		::std::vector<::std::string> systemNamespaceNames = File::Table::GetSplitedNamespaceNames(system, usageTableEntityId);
 		systemNamespaceNames.insert(systemNamespaceNames.begin(), "Root");
 		::std::vector<::std::string> findingTableSplitedFullName = ECS::File::Table::SplitName(findingFullTableName);
 		if (findingFullTableName.starts_with("::")) {
@@ -381,7 +355,7 @@ namespace ECS::File::Table {
 			if (tableName != findingTableName) {
 				return;
 			}
-			::std::vector<::std::string> tableSplitedNamespaces = File::Table::ECS__FILE__TABLE__GET_SPLITED_NAMESPACE_NAMES(system, tableEntityId);
+			::std::vector<::std::string> tableSplitedNamespaces = File::Table::GetSplitedNamespaceNames(system, tableEntityId);
 			tableSplitedNamespaces.insert(tableSplitedNamespaces.begin(), "Root");
 			bool isFindingAndCurrentTablesHasCommonNamespace = [](
 				const ::std::vector<::std::string>& first,
@@ -410,6 +384,7 @@ namespace ECS::File::Table {
 			}
 			for (auto rIt = systemNamespaceNames.rbegin(); rIt != systemNamespaceNames.rend(); ++rIt) {
 				if (*rIt == tableSplitedNamespaces.front()) {
+
 					applicants.push_back({ ::std::abs(::std::distance(rIt, systemNamespaceNames.rbegin())), tableEntityId });
 				}
 			}
@@ -426,22 +401,22 @@ namespace ECS::File::Table {
 	}
 
 	template<class System, class TableTag>
-	ECS2::Entity::Id ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME(System* system, ECS2::Entity::Id usageTableEntityId, const ::std::string& findingFullTableName) {
-		const ECS2::Entity::Id tableEntityId = File::Table::ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME_OR_INVALID_ID<System, TableTag>(system, usageTableEntityId, findingFullTableName);
+	ECS2::Entity::Id GetTableEntityIdByName(System* system, ECS2::Entity::Id usageTableEntityId, const ::std::string& findingFullTableName) {
+		const ECS2::Entity::Id tableEntityId = File::Table::GetTableEntityIdByNameOrInvalidId<System, TableTag>(system, usageTableEntityId, findingFullTableName);
 		ASSERT_FMSG(
 			tableEntityId.IsValid(),
-			"Can't find {} in context {}.", findingFullTableName, ECS__FILE__TABLE__GET_FULL_NAME(system, usageTableEntityId, "::", false));
+			"Can't find {} in context {}.", findingFullTableName, GetFullName(system, usageTableEntityId, "::", false));
 		return tableEntityId;
 
 	}
 
 	template<class System>
-	ECS2::Entity::Id ECS__FILE__TABLE__GET_TABLE_FILE_ENTITY(System* system, ECS2::Entity::Id tableEntityId) {
+	ECS2::Entity::Id GetTableFileEntity(System* system, ECS2::Entity::Id tableEntityId) {
 		return system->template GetComponent<ECS::File::EntityId>(tableEntityId)->id_;
 	}
 
 	template<class System>
-	::std::filesystem::path ECS__FILE__GET_FILE_INCLUDE_PATH(System* system, ECS2::Entity::Id fileEntityId, ::std::filesystem::path projectFileFullPath, ::std::string extensionStr) {
+	::std::filesystem::path GetFileIncludePath(System* system, ECS2::Entity::Id fileEntityId, ::std::filesystem::path projectFileFullPath, ::std::string extensionStr) {
 		auto projectFilePathIt = projectFileFullPath.begin();
 		::std::filesystem::path ecsFilePath = system->template GetComponent<ECS::File::Path>(fileEntityId)->path_;
 		if (ecsFilePath.is_absolute()) {
@@ -465,7 +440,7 @@ namespace ECS::File::Table {
 	}
 
 	template<class System>
-	::std::vector<ECS2::Entity::Id> ECS__FILE__TABLE__SYSTEM__GET_WRITE_COMPONENT_ENTITY_IDS(System* system, ECS2::Entity::Id systemEntityId) {
+	::std::vector<ECS2::Entity::Id> GetWriteComponentEntityIds(System* system, ECS2::Entity::Id systemEntityId) {
 		ASSERT(system->template IsComponentExist<ECS::File::Table::System::Tag>(systemEntityId));
 		::std::vector<ECS2::Entity::Id> writeComponents;
 		if (system->template IsComponentExist<ECS::File::Table::System::UpdateMethod::EntityId>(systemEntityId)) {
@@ -480,7 +455,7 @@ namespace ECS::File::Table {
 					if (allCombinations) continue;
 					const auto& processComponentInfos = system->template GetComponent<ECS::File::Table::System::UpdateMethod::Process::Entity::ProcessComponents>(processesEntity)->componentInfos_;
 					for (auto& processComponentInfo : processComponentInfos) {
-						ECS2::Entity::Id componentEntityId = ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME<System, ECS::File::Table::Component::Tag>(
+						ECS2::Entity::Id componentEntityId = GetTableEntityIdByName<System, ECS::File::Table::Component::Tag>(
 							system,
 							systemEntityId,
 							processComponentInfo.name_);
@@ -497,7 +472,7 @@ namespace ECS::File::Table {
 					if (system->template IsComponentExist<ECS::File::Table::System::UpdateMethod::Access::Entity::AccessComponents>(accessEntity)) {
 						const auto& accessComponentInfos = system->template GetComponent<ECS::File::Table::System::UpdateMethod::Access::Entity::AccessComponents>(accessEntity)->components_;
 						for (auto& accessComponentInfo : accessComponentInfos) {
-							ECS2::Entity::Id componentEntityId = ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME<System, ECS::File::Table::Component::Tag>(
+							ECS2::Entity::Id componentEntityId = GetTableEntityIdByName<System, ECS::File::Table::Component::Tag>(
 								system,
 								systemEntityId,
 								accessComponentInfo.name_);
@@ -509,7 +484,7 @@ namespace ECS::File::Table {
 					//archetype
 					if (system->template IsComponentExist<ECS::File::Table::System::UpdateMethod::Access::Entity::Archetype>(accessEntity)) {
 						const std::string archetypeLocalName = system->template  GetComponent<ECS::File::Table::System::UpdateMethod::Access::Entity::Archetype>(accessEntity)->name_;
-						ECS2::Entity::Id archetypeEntityId = File::Table::ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME<System, ECS::File::Table::Archetype::Tag>(system, systemEntityId, archetypeLocalName);
+						ECS2::Entity::Id archetypeEntityId = File::Table::GetTableEntityIdByName<System, ECS::File::Table::Archetype::Tag>(system, systemEntityId, archetypeLocalName);
 						//TODO: Get archetype components
 
 					}
@@ -520,7 +495,7 @@ namespace ECS::File::Table {
 	}
 
 	template<class System>
-	::std::vector<ECS2::Entity::Id> ECS__FILE__TABLE__SYSTEM__GET_READ_COMPONENT_ENTITY_IDS(System* system, ECS2::Entity::Id systemEntityId) {
+	::std::vector<ECS2::Entity::Id> GetReadComponentEntityIds(System* system, ECS2::Entity::Id systemEntityId) {
 		ASSERT(system->template IsComponentExist<ECS::File::Table::System::Tag>(systemEntityId));
 		::std::vector<ECS2::Entity::Id> readComponents;
 		if (system->template IsComponentExist<ECS::File::Table::System::UpdateMethod::EntityId>(systemEntityId)) {
@@ -541,7 +516,7 @@ namespace ECS::File::Table {
 					}
 					const auto& processComponentInfos = system->template GetComponent<ECS::File::Table::System::UpdateMethod::Process::Entity::ProcessComponents>(processesEntity)->componentInfos_;
 					for (auto& processComponentInfo : processComponentInfos) {
-						ECS2::Entity::Id componentEntityId = ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME<System, ECS::File::Table::Component::Tag >(
+						ECS2::Entity::Id componentEntityId = GetTableEntityIdByName<System, ECS::File::Table::Component::Tag >(
 							system,
 							systemEntityId,
 							processComponentInfo.name_);
@@ -558,7 +533,7 @@ namespace ECS::File::Table {
 					if (system->template IsComponentExist<ECS::File::Table::System::UpdateMethod::Access::Entity::AccessComponents>(accessEntity)) {
 						const auto& accessComponentInfos = system->template GetComponent<ECS::File::Table::System::UpdateMethod::Access::Entity::AccessComponents>(accessEntity)->components_;
 						for (auto& accessComponentInfo : accessComponentInfos) {
-							ECS2::Entity::Id componentEntityId = File::Table::ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME<System, ECS::File::Table::Component::Tag>(
+							ECS2::Entity::Id componentEntityId = File::Table::GetTableEntityIdByName<System, ECS::File::Table::Component::Tag>(
 								system,
 								systemEntityId,
 								accessComponentInfo.name_);
@@ -574,7 +549,7 @@ namespace ECS::File::Table {
 	}
 
 	template<class System>
-	std::vector<ECS2::Entity::Id> GET_TABLE_PARENTS(System* system, ECS2::Entity::Id tableEntityId) {
+	std::vector<ECS2::Entity::Id> GetTableParents(System* system, ECS2::Entity::Id tableEntityId) {
 		ASSERT(system->IsComponentExist<File::Table::Tag>(tableEntityId));
 		if (!system->template IsComponentExist<File::Table::ParentTableEntityId>(tableEntityId)) {
 			return {};
@@ -595,71 +570,11 @@ namespace ECS::File::Table {
 		}
 	}
 
-	//template<class System>
-	//::std::vector<ECS2::Entity::Id> ECS__FILE__TABLE__SYSTEM__GET_ARCHETYPES_USED(System* system, ECS2::Entity::Id systemEntityId) {
-	//	ASSERT(system->template IsComponentExist<ECS::File::Table::System::Tag>(systemEntityId));
-	//	::std::vector<ECS2::Entity::Id> readComponents;
-	//	if (system->template IsComponentExist<ECS::File::Table::System::UpdateMethod::EntityId>(systemEntityId)) {
-	//		ECS2::Entity::Id updateMethodEntityId
-	//			= system->template GetComponent<ECS::File::Table::System::UpdateMethod::EntityId>(systemEntityId)->id_;
-	//		ECS2::ComponentsFilter updateMethodCF = system->GetComponentsFilter(updateMethodEntityId);
-	//		if (system->template IsComponentExist<ECS::File::Table::System::UpdateMethod::Process::Entity::EntityIds>(updateMethodEntityId)) {
-	//			::std::vector<ECS2::Entity::Id> processesEntities
-	//				= system->template GetComponent<ECS::File::Table::System::UpdateMethod::Process::Entity::EntityIds>(updateMethodEntityId)->entityIds_;
-	//			for (ECS2::Entity::Id processesEntity : processesEntities) {
-	//				const bool allCombinations = system->template IsComponentExist<ECS::File::Table::System::UpdateMethod::Process::Entity::ProcessAllCombinations>(processesEntity);
-	//				if (allCombinations) continue;
-	//				const auto& processComponentInfos = system->template GetComponent<ECS::File::Table::System::UpdateMethod::Process::Entity::ProcessComponents>(processesEntity)->componentInfos_;
-	//				for (auto& processComponentInfo : processComponentInfos) {
-	//					ECS2::Entity::Id componentEntityId = ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME(
-	//						system,
-	//						ECS::File::Table::Component::Tag,
-	//						systemEntityId,
-	//						processComponentInfo.name_);
-	//					if (processComponentInfo.readonly_) {
-	//						readComponents.push_back(componentEntityId);
-	//					}
-	//				}
-	//			}
-	//		}
-	//		if (system->template IsComponentExist<ECS::File::Table::System::UpdateMethod::Access::Entity::EntityIds>(updateMethodEntityId)) {
-	//			::std::vector<ECS2::Entity::Id> accessesEntities
-	//				= system->template GetComponent<ECS::File::Table::System::UpdateMethod::Access::Entity::EntityIds>(updateMethodEntityId)->entityIds_;
-	//			for (ECS2::Entity::Id accessEntity : accessesEntities) {
-	//				if (system->template IsComponentExist<ECS::File::Table::System::UpdateMethod::Access::Entity::AccessComponents>(accessEntity)) {
-	//					const auto& accessComponentInfos = system->template GetComponent<ECS::File::Table::System::UpdateMethod::Access::Entity::AccessComponents>(accessEntity)->components_;
-	//					for (auto& accessComponentInfo : accessComponentInfos) {
-	//						ECS2::Entity::Id componentEntityId = ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME(
-	//							system,
-	//							ECS::File::Table::Component::Tag,
-	//							systemEntityId,
-	//							accessComponentInfo.name_);
-	//						if (accessComponentInfo.readonly_) {
-	//							readComponents.push_back(componentEntityId);
-	//						}
-	//					}
-	//				}
-	//			}
-	//		}
-	//		return readComponents;
-	//	}
-	//}
-
-	//#define  ECS__FILE__TABLE__SYSTEM__GET_COMPONENTS_ENTITY_IDS(system)																												\
-	//	[this](ECS2::Entity::Id systemEntityId){																																		\
-	//		const auto readComponents = ECS__FILE__TABLE__SYSTEM__GET_READ_COMPONENT_ENTITY_IDS(systemEntityId);																		\
-	//		const auto writeComponents = ECS__FILE__TABLE__SYSTEM__GET_WRITE_COMPONENT_ENTITY_IDS(systemEntityId);																		\
-	//		::std::vector<ECS2::Entity::Id> allComponents = readComponents;																												\
-	//		allComponents.insert(allComponents.end(), writeComponents.begin(), writeComponents.end());																					\
-	//		::std::sort(allComponents.begin(), allComponents.end());																														\
-	//		allComponents.erase(::std::unique(allComponents.begin(), allComponents.end()), allComponents.end());																			\
-	//		return allComponents;																																						\
-	//	}(system)
 
 	template<class System>
-	::std::vector<ECS2::Entity::Id> ECS__FILE__TABLE__SYSTEM__GET_COMPONENTS_ENTITY_IDS(System* system, ECS2::Entity::Id systemEntityId) {
-		const auto readComponents = ECS__FILE__TABLE__SYSTEM__GET_READ_COMPONENT_ENTITY_IDS(system, systemEntityId);
-		const auto writeComponents = ECS__FILE__TABLE__SYSTEM__GET_WRITE_COMPONENT_ENTITY_IDS(system, systemEntityId);
+	::std::vector<ECS2::Entity::Id> GetComponentsEntityIds(System* system, ECS2::Entity::Id systemEntityId) {
+		const auto readComponents = GetReadComponentEntityIds(system, systemEntityId);
+		const auto writeComponents = GetWriteComponentEntityIds(system, systemEntityId);
 		::std::vector<ECS2::Entity::Id> allComponents = readComponents;
 		allComponents.insert(allComponents.end(), writeComponents.begin(), writeComponents.end());
 		::std::sort(allComponents.begin(), allComponents.end());
@@ -695,7 +610,7 @@ namespace ECS::File::Table {
 					return systemInfo.id_ == runBeforeSystemEntityId;
 					});
 				if (it == systemRunBefore->systems_.end()) {
-					systemRunBefore->systems_.push_back({ runBeforeSystemEntityId, ECS__FILE__TABLE__GET_FULL_NAME(system, runBeforeSystemEntityId, "::", false) });
+					systemRunBefore->systems_.push_back({ runBeforeSystemEntityId, GetFullName(system, runBeforeSystemEntityId, "::", false) });
 				}
 			}
 		}
@@ -714,19 +629,29 @@ namespace ECS::File::Table {
 					return systemInfo.id_ == runAfterSystemEntityId;
 					});
 				if (it == systemRunAfter->systems_.end()) {
-					systemRunAfter->systems_.push_back({ runAfterSystemEntityId, ECS__FILE__TABLE__GET_FULL_NAME(system, runAfterSystemEntityId, "::", false) });
+					systemRunAfter->systems_.push_back({ runAfterSystemEntityId, GetFullName(system, runAfterSystemEntityId, "::", false) });
 				}
 			}
 		}
 	}
 
-#define ECS__FILE__TABLE__SYSTEM__IS_DISABLED(system)										\
-	[this](ECS2::Entity::Id systemEntityId){										\
-		return IsComponentExist<ECS::File::Table::System::Disabled>(systemEntityId);\
-	}(system)
-
 	template<class System>
 	bool IsSystemDisabled(System* system, ECS2::Entity::Id systemEntityId) {
 		return system->template IsComponentExist<ECS::File::Table::System::Disabled>(systemEntityId);
+	}
+
+	template<class System>
+	std::vector<ECS2::Entity::Id> GetComponentFields(System* system, ECS2::Entity::Id ecsComponentEntityId) {
+
+		std::vector<ECS2::Entity::Id> ecsComponentFields;
+
+		if (system->template IsComponentExist<ECS::File::Table::Component::Field::EntityIds>(ecsComponentEntityId)) {
+			for (ECS2::Entity::Id fieldEntityId : system->template GetComponent<ECS::File::Table::Component::Field::EntityIds>(ecsComponentEntityId)->entityIds_) {
+				ASSERT(system->template IsComponentExist<ECS::File::Table::Component::Field::Tag>(fieldEntityId));
+				ecsComponentFields.push_back(fieldEntityId);
+			}
+		}
+
+		return ecsComponentFields;
 	}
 }

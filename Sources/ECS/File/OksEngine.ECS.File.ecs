@@ -570,14 +570,14 @@ ECSNamespace = {
 
                             EntityArchetype = {
                                 components = {
-                                    "Entity::Tag",
-                                    "Entity::ProcessAllCombinations",
-                                    "Entity::ProcessComponents",
-                                    "Entity::IncludeComponents",
-                                    "Entity::AccessComponents",
-                                    "Entity::CreateComponents",
-                                    "Entity::RemoveComponents",
-                                    "Entity::ExcludeComponents"
+                                    "Process::Entity::Tag",
+                                    "Process::Entity::ProcessAllCombinations",
+                                    "Process::Entity::ProcessComponents",
+                                    "Process::Entity::IncludeComponents",
+                                    "Process::Entity::AccessComponents",
+                                    "Process::Entity::CreateComponents",
+                                    "Process::Entity::RemoveComponents",
+                                    "Process::Entity::ExcludeComponents"
                                 }
                             }
                         }
@@ -617,9 +617,9 @@ ECSNamespace = {
                             },
                             EntityArchetype = {
                                 components = {
-                                    "Entity::Tag",
-                                    "Entity::CreateComponents",
-                                    "Entity::Archetype"
+                                    "Create::Entity::Tag",
+                                    "Create::Entity::CreateComponents",
+                                    "Create::Entity::Archetype"
                                 }
                             }
                         }
@@ -673,11 +673,11 @@ ECSNamespace = {
                             },
                             EntityArchetype = {
                                 components = {
-                                    "Entity::Tag",
-                                    "Entity::AccessComponents",
-                                    "Entity::CreateComponents",
-                                    "Entity::RemoveComponents",
-                                    "Entity::Archetype"
+                                    "Access::Entity::Tag",
+                                    "Access::Entity::AccessComponents",
+                                    "Access::Entity::CreateComponents",
+                                    "Access::Entity::RemoveComponents",
+                                    "Access::Entity::Archetype"
                                 }
                             }
                         }

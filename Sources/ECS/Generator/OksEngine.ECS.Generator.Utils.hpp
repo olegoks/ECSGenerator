@@ -5,8 +5,8 @@ namespace ECS::Generator {
 
 	template<class System>
 	auto GET_PROJECT_INCLUDE_FILE_NAME(System* system, ECS2::Entity::Id projectEntityId) {
-		return "auto_" +
-			std::filesystem::path{ system->template  GetComponent<ECS::Project::Path>(projectEntityId)->path_ }.stem().string() + ".Project";
+		return "auto_Project";// +
+			/*std::filesystem::path{ system->template  GetComponent<ECS::Project::Path>(projectEntityId)->path_ }.stem().string() + *///"Project";
 	}
 
 	template<class System>

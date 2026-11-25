@@ -880,21 +880,7 @@ CPPNamespace = {
                         }
                     },
                     {
-                        archetype = "ECS::File::Table::System::System"
-                    },
-                    {
-                        archetype = "ECS::File::Table::System::CallOrder::CallOrder"
-                    },
-                    {
-                        archetype = "ECS::File::Table::System::UpdateMethod::UpdateMethod"
-                    },
-                    {
-                        accessingComponents = {
-                            "ECS::File::Table::System::CallOrder::EntityId",
-                            "ECS::File::Table::System::CallOrder::Tag",
-                            "ECS::File::Table::System::CallOrder::RunAfter",
-                            "ECS::File::Table::System::CallOrder::RunBefore",
-                        }
+                        archetype = "ECS::File::Table::System::SystemAggregate"
                     },
                     {
                         archetype = "ECS::File::File"

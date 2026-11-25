@@ -1122,11 +1122,11 @@ namespace ECS::File {
 
 			ECS2::Entity::Id callOrderEntityId = GetComponent<ECS::File::Table::System::CallOrder::EntityId>(entity0id)->id_;
 
-			std::string systemName = File::Table::ECS__FILE__TABLE__GET_FULL_NAME(this, entity0id, "::", false);
+			std::string systemName = File::Table::GetFullName(this, entity0id, "::", false);
 
 			auto& runAfterSystems = GetComponent<ECS::File::Table::System::CallOrder::RunAfter>(callOrderEntityId)->systems_;
 			for (auto& systemInfo : runAfterSystems) {
-				ECS2::Entity::Id runAfterSystemEntityId = File::Table::ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME_OR_INVALID_ID<ValidateCallOrderDependecies, ECS::File::Table::System::Tag>(
+				ECS2::Entity::Id runAfterSystemEntityId = File::Table::GetTableEntityIdByNameOrInvalidId<ValidateCallOrderDependecies, ECS::File::Table::System::Tag>(
 					this,
 					entity0id,
 					systemInfo.name_);
@@ -1136,7 +1136,7 @@ namespace ECS::File {
 
 			auto& runBeforeSystems = GetComponent<ECS::File::Table::System::CallOrder::RunBefore>(callOrderEntityId)->systems_;
 			for (auto& systemInfo : runBeforeSystems) {
-				ECS2::Entity::Id runBeforeSystemEntityId = File::Table::ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME_OR_INVALID_ID<ValidateCallOrderDependecies, ECS::File::Table::System::Tag>(
+				ECS2::Entity::Id runBeforeSystemEntityId = File::Table::GetTableEntityIdByNameOrInvalidId<ValidateCallOrderDependecies, ECS::File::Table::System::Tag>(
 					this,
 					entity0id,
 					systemInfo.name_);
@@ -1163,7 +1163,7 @@ namespace ECS::File {
 			for (Common::Index i = 0; i < allSystemsNumber; i++) {
 
 				ECS2::Entity::Id systemEntityId = *(std::get<ECS2::Entity::Id*>(systemComponents) + i);
-				const std::string systemName = File::Table::ECS__FILE__TABLE__GET_FULL_NAME(this, systemEntityId, "::", false);
+				const std::string systemName = File::Table::GetFullName(this, systemEntityId, "::", false);
 
 				if (systemName == "PacketManager::GetRequiredPackets") {
 					Common::BreakPointLine();
@@ -1207,7 +1207,7 @@ namespace ECS::File {
 			// 2. Алгоритм Кана
 			while (!rootSystems.empty()) {
 				ECS2::Entity::Id currentId = rootSystems.front();
-				const std::string systemName = File::Table::ECS__FILE__TABLE__GET_FULL_NAME(this, currentId, "::", false);
+				const std::string systemName = File::Table::GetFullName(this, currentId, "::", false);
 				rootSystems.pop();
 				systemsOrder.push_back(currentId);
 				orederedSystemIdToIndex[currentId] = systemsOrder.size() - 1;
@@ -1242,10 +1242,10 @@ namespace ECS::File {
 
 				ASSERT_FMSG(systemEntityId.IsValid(), "Invalid system entity id in systens order.");
 
-				std::string systemName = File::Table::ECS__FILE__TABLE__GET_FULL_NAME(this, systemEntityId, "::", false);
+				std::string systemName = File::Table::GetFullName(this, systemEntityId, "::", false);
 
-				const auto writeComponents = File::Table::ECS__FILE__TABLE__SYSTEM__GET_WRITE_COMPONENT_ENTITY_IDS(this, systemEntityId);
-				const auto readComponents = File::Table::ECS__FILE__TABLE__SYSTEM__GET_READ_COMPONENT_ENTITY_IDS(this, systemEntityId);
+				const auto writeComponents = File::Table::GetWriteComponentEntityIds(this, systemEntityId);
+				const auto readComponents = File::Table::GetReadComponentEntityIds(this, systemEntityId);
 
 				for (ECS2::Entity::Id writeComponent : writeComponents) {
 					componentToSystems[writeComponent].insert(systemEntityId);
@@ -1299,7 +1299,7 @@ namespace ECS::File {
 			std::vector<ECS2::Entity::Id> orderedChildThreadSystems;
 
 			for (ECS2::Entity::Id systemEntityId : systemsOrder) {
-				const std::string systemName = File::Table::ECS__FILE__TABLE__GET_FULL_NAME(this, systemEntityId, "::", false);
+				const std::string systemName = File::Table::GetFullName(this, systemEntityId, "::", false);
 				if (IsComponentExist<ECS::File::Table::System::Thread>(systemEntityId)) {
 					const std::string thread = GetComponent<ECS::File::Table::System::Thread>(systemEntityId)->thread_;
 					if (thread == "Main") {
@@ -1318,7 +1318,7 @@ namespace ECS::File {
 						if (dependenceSystem == systemEntityId) {
 							continue;
 						}
-						std::string name = File::Table::ECS__FILE__TABLE__GET_FULL_NAME(this, dependenceSystem, "::", false);
+						std::string name = File::Table::GetFullName(this, dependenceSystem, "::", false);
 
 						Common::Index dependenceSystemIndex = orederedSystemIdToIndex[dependenceSystem];
 						Common::Index currentSystemIndex = orederedSystemIdToIndex[systemEntityId];
@@ -1346,7 +1346,7 @@ namespace ECS::File {
 						continue;
 					}
 				}*/
-				const std::string systemFullName = File::Table::ECS__FILE__TABLE__GET_FULL_NAME(this, systemEntityId, "::", false);
+				const std::string systemFullName = File::Table::GetFullName(this, systemEntityId, "::", false);
 
 				if (systemFullName == "PacketManager::GetRequiredPackets") {
 					Common::BreakPointLine();
@@ -1360,7 +1360,7 @@ namespace ECS::File {
 				//Create reverse dependences.
 				auto dependenceRunAfterSystems = GetComponent<ECS::File::Table::System::CallOrder::RunAfter>(callOrderEntityId)->systems_;
 				for (auto runAfterSystemName : dependenceRunAfterSystems) {
-					ECS2::Entity::Id runAfterEntityId = File::Table::ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME_OR_INVALID_ID<CreateCallOrderAdditionalDependencies, ECS::File::Table::System::Tag>(
+					ECS2::Entity::Id runAfterEntityId = File::Table::GetTableEntityIdByNameOrInvalidId<CreateCallOrderAdditionalDependencies, ECS::File::Table::System::Tag>(
 						this,
 						systemEntityId,
 						runAfterSystemName.name_);
@@ -1371,7 +1371,7 @@ namespace ECS::File {
 				}
 				auto dependenceRunBeforeSystems = GetComponent<ECS::File::Table::System::CallOrder::RunBefore>(callOrderEntityId)->systems_;
 				for (auto runBeforeSystemName : dependenceRunBeforeSystems) {
-					ECS2::Entity::Id runBeforeEntityId = File::Table::ECS__FILE__TABLE__GET_TABLE_ENTITY_ID_BY_NAME_OR_INVALID_ID<CreateCallOrderAdditionalDependencies, ECS::File::Table::System::Tag>(
+					ECS2::Entity::Id runBeforeEntityId = File::Table::GetTableEntityIdByNameOrInvalidId<CreateCallOrderAdditionalDependencies, ECS::File::Table::System::Tag>(
 						this,
 						systemEntityId,
 						runBeforeSystemName.name_);

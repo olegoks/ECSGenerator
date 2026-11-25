@@ -191,7 +191,7 @@ set(CLANG_LIBS
 set_target_properties(ecs_generator3
     PROPERTIES
     VS_DEBUGGER_COMMAND_ARGUMENTS
-    "$<$<CONFIG:Debug>: -ecs_project_file D:/Downloads/Desktop/ECSGenerator/ecs_generator3.ecs_project>$<$<CONFIG:Release>: -ecs_project_file D:/Downloads/Desktop/ECSGenerator/ecs_generator3.ecs_project>$<$<CONFIG:RelWithDebInfo>: -ecs_project_file D:/Downloads/Desktop/ECSGenerator/ecs_generator3.ecs_project>"
+    "$<$<CONFIG:Debug>: -ecs_project_file D:/Downloads/Desktop/TestProject/TestProject.ecs_project>$<$<CONFIG:Release>: -ecs_project_file D:/Downloads/Desktop/ECSGenerator/ecs_generator3.ecs_project>$<$<CONFIG:RelWithDebInfo>: -ecs_project_file D:/Downloads/Desktop/ECSGenerator/ecs_generator3.ecs_project>"
 )
 
 target_include_directories(ecs_generator3
@@ -207,7 +207,8 @@ target_sources(ecs_generator3
     PRIVATE
 )
 
-
+target_compile_options(ecs_generator3 PRIVATE /utf-8)
+target_compile_options(ecs_generator3 PRIVATE /wd4828)
 include(auto_IncludeDirectories.cmake)
 target_include_directories(ecs_generator3
     PUBLIC
