@@ -1,6 +1,7 @@
-
-#include <auto_OksEngine.RunSystems.hpp>
-#include <Engine.hpp>
+// FIX: в дампе было <auto_OksEngine.RunSystems.hpp> и <Engine.hpp> —
+// таких файлов нет. Используем существующие заголовки.
+#include <auto_ecs_generator3.RunSystems.hpp>
+#include <ecs_generator3.hpp>
 
 #include <Common/CommandLineParameters/auto_OksEngine.CommandLineParameters.hpp>
 #include <ECS/File/auto_OksEngine.ECS.File.hpp>

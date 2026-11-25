@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 namespace Generated {
-    static const std::string mainCppFile = R"(@MAIN_CPP_CONTENT@)";
-    static const std::string projectCppFile = R"(@PROJECT_CPP_CONTENT@)";
-    static const std::string projectHppFile = R"(@PROJECT_HPP_CONTENT@)";
+    // FIX: уникальный разделитель raw-строки, чтобы содержимое
+    // шаблонов не могло случайно закрыть R"(...)".
+    static const std::string mainCppFile = R"GEN(@MAIN_CPP_CONTENT@)GEN";
+    static const std::string projectCppFile = R"GEN(@PROJECT_CPP_CONTENT@)GEN";
+    static const std::string projectHppFile = R"GEN(@PROJECT_HPP_CONTENT@)GEN";
 }

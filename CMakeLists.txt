@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 3.26.4)
+
+# FIX: CMAKE_CXX_COMPILER должен задаваться ДО project()
+set(CMAKE_CXX_COMPILER "clang++")
+
 project(Generator)
 
 set(CMAKE_RULE_MESSAGES ON)
@@ -7,8 +11,6 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-set(CMAKE_CXX_COMPILER "clang++")
 
 # set(CMAKE_TOOLCHAIN_FILE "D:/OksEngine/vcpkg/scripts/buildsystems/vcpkg.cmake") #For vcpkg
 
@@ -34,10 +36,14 @@ get_source_files(
     "${CMAKE_CURRENT_LIST_DIR}/Sources"
 )
 
-list(APPEND ALL_SOURCES ${MODULE_SOURCES} ${PROJECT_SOURCES})
-list(REMOVE_DUPLICATES ALL_SOURCES)
+# FIX: фильтруем шаблоны ДО добавления в ALL_SOURCES,
+# иначе CPPTemplates/Project.cpp и main.cpp попадают в сборку
+# и конфликтуют с Sources/CPPTemplates_Generated/*.
 list(FILTER PROJECT_SOURCES EXCLUDE REGEX "/CPPTemplates/")
 list(FILTER PROJECT_SOURCES EXCLUDE REGEX "/CMakeTemplates/")
+
+list(APPEND ALL_SOURCES ${MODULE_SOURCES} ${PROJECT_SOURCES})
+list(REMOVE_DUPLICATES ALL_SOURCES)
 #
 
 set(CMAKE_SUPPRESS_REGENERATION true) # To exclude ZERO_CHECK target
@@ -155,7 +161,6 @@ endif()
 
 #GRAPHVIZ
 find_package(PkgConfig REQUIRED)
-target_compile_options(ecs_generator3 PUBLIC "/MP" "/bigobj")
 pkg_check_modules(GRAPHVIZ REQUIRED libgvc)
 message(STATUS "${GRAPHVIZ_INCLUDE_DIRS}")
 target_include_directories(
@@ -237,7 +242,8 @@ target_include_directories(ecs_generator3 PUBLIC ${LUA_INCLUDE_DIR})
 target_link_libraries(ecs_generator3 PRIVATE ${LUA_LIBRARIES})
 find_package(magic_enum CONFIG REQUIRED)
 
-find_package(winpixevent CONFIG REQUIRED)
+# FIX: имя пакета WinPixEventRuntime (не winpixevent)
+find_package(WinPixEventRuntime CONFIG REQUIRED)
 target_link_libraries(ecs_generator3 PUBLIC 
 Microsoft::WinPixEventRuntime
 magic_enum::magic_enum)

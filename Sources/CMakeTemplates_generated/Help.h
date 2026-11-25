@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 namespace Generated {
-    static const std::string cmakeHelpFile = R"(
-#Usage:
+    // FIX: уникальный разделитель raw-строки.
+    static const std::string cmakeHelpFile = R"GEN(#Usage:
 # get_source_files(
 #     PROJECT_SOURCES
 #         "${CMAKE_CURRENT_LIST_DIR}/Sources"
@@ -89,8 +89,5 @@ function(GenerateTemplates TEMPLATE_PATH DEST_PATH)
         "${DEST_PATH}"
         @ONLY
     )
-endfunction()
-
-
-)";
+endfunction())GEN";
 }

@@ -1,8 +1,8 @@
 # unpack-project.ps1
-# Восстанавливает файлы проекта из дампа, созданного dump-project.ps1.
-# По умолчанию распаковывает в ту же папку, где лежит сам скрипт.
+# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ dump-project.ps1.
+# пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
 #
-# Примеры:
+# пїЅпїЅпїЅпїЅпїЅпїЅпїЅ:
 #   .\unpack-project.ps1
 #   .\unpack-project.ps1 -Force
 #   .\unpack-project.ps1 -DumpFile C:\backup\project_dump.xml -DestRoot C:\restore -Force
@@ -14,7 +14,7 @@ param(
     [switch]$StripTrailingNewline
 )
 
-# Папка скрипта (с фолбэком, если $PSScriptRoot пуст)
+# пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ $PSScriptRoot пїЅпїЅпїЅпїЅ)
 $scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
 
 if (-not $DumpFile) { $DumpFile = Join-Path $scriptDir "project_dump.xml" }
@@ -34,7 +34,7 @@ $destRootNormalized = [IO.Path]::GetFullPath($DestRoot).TrimEnd(
     [IO.Path]::DirectorySeparatorChar
 ) + [IO.Path]::DirectorySeparatorChar
 
-# Дамп не должен перезаписать сам себя (на случай -Force)
+# пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ (пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ -Force)
 $dumpFileNormalized = [IO.Path]::GetFullPath($DumpFile)
 
 $text = [System.IO.File]::ReadAllText($DumpFile, [System.Text.Encoding]::UTF8)
@@ -69,7 +69,7 @@ foreach ($m in $matches) {
     $fullPath           = Join-Path $DestRoot $relativeFsPath
     $fullPathNormalized = [IO.Path]::GetFullPath($fullPath)
 
-    # Защита от path traversal
+    # пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ path traversal
     if (-not $fullPathNormalized.StartsWith(
             $destRootNormalized,
             [System.StringComparison]::OrdinalIgnoreCase)) {
@@ -78,7 +78,7 @@ foreach ($m in $matches) {
         continue
     }
 
-    # Не перезаписываем сам дамп
+    # пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     if ([string]::Equals($fullPathNormalized, $dumpFileNormalized,
             [System.StringComparison]::OrdinalIgnoreCase)) {
         Write-Warning "Skipping (would overwrite dump file): $relPath"
